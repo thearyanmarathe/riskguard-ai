@@ -1,0 +1,69 @@
+{
+  "data_source": "data/raw/creditcard.csv",
+  "raw_data_shape": [
+    284807,
+    31
+  ],
+  "duplicate_analysis": {
+    "duplicate_rows": 1081,
+    "duplicate_rows_class_0": 1062,
+    "duplicate_rows_class_1": 19,
+    "duplicate_rows_class_0_proportion": 0.9824236817761333,
+    "duplicate_rows_class_1_proportion": 0.01757631822386679,
+    "rows_in_duplicate_groups": 1854,
+    "unique_rows_after_deduplication": 283726
+  },
+  "deduplication": {
+    "applied_to": "in-memory training dataframe only",
+    "reason": "Avoid exact duplicate records appearing in both training and test sets."
+  },
+  "split": {
+    "random_seed": 42,
+    "test_size_proportion": 0.2,
+    "train_rows": 226980,
+    "test_rows": 56746,
+    "train_class_counts": {
+      "0": 226602,
+      "1": 378
+    },
+    "test_class_counts": {
+      "0": 56651,
+      "1": 95
+    }
+  },
+  "logistic_regression": {
+    "class_weight": "balanced",
+    "precision": 0.05638586956521739,
+    "recall": 0.8736842105263158,
+    "f1_score": 0.10593490746649649,
+    "average_precision": 0.6719244530518994,
+    "confusion_matrix": [
+      [
+        55262,
+        1389
+      ],
+      [
+        12,
+        83
+      ]
+    ]
+  },
+  "xgboost": {
+    "scale_pos_weight": 599.4761904761905,
+    "precision": 0.9146341463414634,
+    "recall": 0.7894736842105263,
+    "f1_score": 0.847457627118644,
+    "average_precision": 0.8219248088484978,
+    "confusion_matrix": [
+      [
+        56644,
+        7
+      ],
+      [
+        20,
+        75
+      ]
+    ]
+  },
+  "xgboost_artifact": "reports/model/xgboost_baseline.json"
+}

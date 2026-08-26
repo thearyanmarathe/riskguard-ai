@@ -1,0 +1,118 @@
+[
+  {
+    "transaction": {
+      "source_row_id": 28727,
+      "time": 35129.0,
+      "amount": 1.0
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "risk_score": 20.95,
+      "ml_fraud_probability": 0.01587517,
+      "behavioral_rule_points": 20.0,
+      "risk_explanation": "Risk score 20.95: 20 behavioral-rule points and 0.95 ML points. Triggered rules: Unusual Device."
+    },
+    "synthetic_demo_context": {
+      "user_id": "demo_user_138",
+      "device_id": "demo_device_039",
+      "region": "East",
+      "transaction_velocity": 2,
+      "disclaimer": "These fields are synthetic demo metadata, not Kaggle customer data."
+    },
+    "key_risk_signals": [
+      "Saved Phase 2 XGBoost baseline fraud probability: 0.015875.",
+      "Transparent risk score: 20.95 (LOW).",
+      "Behavioral-rule points: 20.",
+      "Triggered behavioral rules: Unusual device."
+    ],
+    "triggered_behavioral_rules": [
+      {
+        "rule_name": "Unusual device",
+        "triggered": true,
+        "evidence": "Synthetic device differs from this demo user's usual device."
+      }
+    ],
+    "investigation_summary": "Source row 28727 has a LOW transparent risk assessment with score 20.95. The saved XGBoost baseline output is 0.015875, and triggered behavioral rules contribute 20 points. This identifies signals for review; it does not prove fraud.",
+    "recommended_investigation_action": "No immediate escalation recommended.",
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+  },
+  {
+    "transaction": {
+      "source_row_id": 233005,
+      "time": 147404.0,
+      "amount": 2.31
+    },
+    "risk_assessment": {
+      "risk_level": "MEDIUM",
+      "risk_score": 40.13,
+      "ml_fraud_probability": 0.002242215,
+      "behavioral_rule_points": 40.0,
+      "risk_explanation": "Risk score 40.13: 40 behavioral-rule points and 0.13 ML points. Triggered rules: High Transaction Velocity; Unusual Device."
+    },
+    "synthetic_demo_context": {
+      "user_id": "demo_user_257",
+      "device_id": "demo_device_130",
+      "region": "South",
+      "transaction_velocity": 7,
+      "disclaimer": "These fields are synthetic demo metadata, not Kaggle customer data."
+    },
+    "key_risk_signals": [
+      "Saved Phase 2 XGBoost baseline fraud probability: 0.002242.",
+      "Transparent risk score: 40.13 (MEDIUM).",
+      "Behavioral-rule points: 40.",
+      "Triggered behavioral rules: High transaction velocity, Unusual device."
+    ],
+    "triggered_behavioral_rules": [
+      {
+        "rule_name": "High transaction velocity",
+        "triggered": true,
+        "evidence": "Synthetic velocity is at least 6 transactions in the demo window."
+      },
+      {
+        "rule_name": "Unusual device",
+        "triggered": true,
+        "evidence": "Synthetic device differs from this demo user's usual device."
+      }
+    ],
+    "investigation_summary": "Source row 233005 has a MEDIUM transparent risk assessment with score 40.13. The saved XGBoost baseline output is 0.002242, and triggered behavioral rules contribute 40 points. This identifies signals for review; it does not prove fraud.",
+    "recommended_investigation_action": "Review the transaction and triggered behavioral signals.",
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+  },
+  {
+    "transaction": {
+      "source_row_id": 215984,
+      "time": 140308.0,
+      "amount": 592.9
+    },
+    "risk_assessment": {
+      "risk_level": "HIGH",
+      "risk_score": 75.0,
+      "ml_fraud_probability": 0.9999875,
+      "behavioral_rule_points": 15.0,
+      "risk_explanation": "Risk score 75.00: 15 behavioral-rule points and 60.00 ML points. Triggered rules: Unusual Region."
+    },
+    "synthetic_demo_context": {
+      "user_id": "demo_user_052",
+      "device_id": "demo_device_052",
+      "region": "East",
+      "transaction_velocity": 1,
+      "disclaimer": "These fields are synthetic demo metadata, not Kaggle customer data."
+    },
+    "key_risk_signals": [
+      "Saved Phase 2 XGBoost baseline fraud probability: 0.999988.",
+      "Transparent risk score: 75.00 (HIGH).",
+      "Behavioral-rule points: 15.",
+      "Triggered behavioral rules: Unusual region."
+    ],
+    "triggered_behavioral_rules": [
+      {
+        "rule_name": "Unusual region",
+        "triggered": true,
+        "evidence": "Synthetic region differs from this demo user's usual region."
+      }
+    ],
+    "investigation_summary": "Source row 215984 has a HIGH transparent risk assessment with score 75.00. The saved XGBoost baseline output is 0.999988, and triggered behavioral rules contribute 15 points. This identifies signals for review; it does not prove fraud.",
+    "recommended_investigation_action": "Prioritize this transaction for manual fraud investigation.",
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+  }
+]

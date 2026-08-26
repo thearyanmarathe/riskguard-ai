@@ -1,0 +1,78 @@
+{
+  "source": "data/raw/creditcard.csv",
+  "raw_columns": [
+    "Time",
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15",
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21",
+    "V22",
+    "V23",
+    "V24",
+    "V25",
+    "V26",
+    "V27",
+    "V28",
+    "Amount",
+    "Class"
+  ],
+  "synthetic_demo_columns": [
+    "user_id",
+    "device_id",
+    "region",
+    "transaction_velocity"
+  ],
+  "random_seed": 42,
+  "transactions_enriched": 5000,
+  "ml_signal": "available: saved Phase 2 XGBoost baseline scored real Kaggle feature columns only",
+  "ml_probability_summary": {
+    "minimum": 4.592001889847097e-09,
+    "maximum": 0.9999874830245972,
+    "mean": 0.0012624782975763083,
+    "median": 8.363927918253466e-06,
+    "transactions_scored": 5000
+  },
+  "rule_trigger_counts": {
+    "high_transaction_velocity": 59,
+    "unusual_device": 598,
+    "unusual_region": 460,
+    "high_transaction_amount": 50
+  },
+  "synthetic_fields": [
+    "user_id",
+    "device_id",
+    "region",
+    "transaction_velocity"
+  ],
+  "velocity_threshold": 6,
+  "amount_threshold": 1115.6277000000034,
+  "rule_points": {
+    "high_transaction_velocity": 20,
+    "unusual_device": 20,
+    "unusual_region": 15,
+    "high_transaction_amount": 20
+  },
+  "risk_formula": "min(100, 60 * ml_fraud_probability + behavioral rule points)",
+  "risk_levels": {
+    "LOW": "score < 25",
+    "MEDIUM": "25 <= score < 50",
+    "HIGH": "score >= 50"
+  }
+}
