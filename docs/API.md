@@ -22,6 +22,16 @@ Returns:
 
 `/health` is public and does not require authentication.
 
+## `GET /ready`
+
+This public endpoint checks local SQLite connectivity and saved model
+availability. It returns `{"status":"ready"}` when dependencies are
+available or a safe `503` response when they are not. Optional AI provider
+availability does not affect readiness.
+
+Responses include an `X-Request-ID` correlation header. Clients should treat
+it as an opaque diagnostic identifier and never use an API key as its value.
+
 ## Authentication
 
 All investigation endpoints require the application key configured through

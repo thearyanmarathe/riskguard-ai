@@ -53,3 +53,22 @@ behavioral rules, risk scores, risk levels, or AI explanations.
 This simple key is not authentication suitable for all production use. Key
 rotation, TLS, rate limiting, stronger identity/authorization, and secure
 secret storage remain deployment requirements.
+
+## Observability and readiness
+
+Structured logs use safe event names, UUID request IDs, endpoint/status
+metadata, bounded durations, provider/fallback flags, and sanitized exception
+types. They do not contain API keys, OpenAI keys, authentication headers,
+prompts, request bodies, raw transaction records, V1–V28 values, CSV contents,
+database connection strings, or filesystem paths. `X-Request-ID` values are
+accepted only as canonical UUIDs or replaced with generated UUIDs.
+
+`GET /ready` is public and checks local SQLite connectivity and saved model
+availability only. Optional OpenAI availability does not make the service
+unready because deterministic fallback remains available. Readiness does not
+expose internal dependency details.
+
+Persistence failures are logged with only a safe error type and return a
+generic server error; SQL details and paths are not exposed. Log rotation,
+centralized access control, alerting, and operational monitoring remain
+deployment requirements.
