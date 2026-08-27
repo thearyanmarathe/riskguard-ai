@@ -14,6 +14,8 @@ RiskGuard AI is a prototype fraud-analysis application. The deterministic risk e
 
 Raw transaction/context values are untrusted data. The application validates them before placing them in a clearly marked evidence package. Trusted instructions are kept separate from that package. AI output is validated before application use, and the deterministic risk result is preserved separately.
 
+When configured, the only external boundary is the optional OpenAI Responses API adapter. It receives the minimized guarded message package, never the raw CSV or full dataset. Provider failure returns the deterministic fallback.
+
 ## Threats and mitigations
 
 | Threat | Impact | Mitigation |

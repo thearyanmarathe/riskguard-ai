@@ -4,13 +4,13 @@ RiskGuard AI is a prototype and not a production financial security system. Phas
 
 ## Trust and data flow
 
-`Kaggle features → XGBoost → ML probability → behavioral rules → deterministic risk score → verified evidence package → AI explanation → validated bounded recommendation`
+`Kaggle features → XGBoost → ML probability → behavioral rules → deterministic risk score → verified evidence package → optional OpenAI provider → validated bounded recommendation`
 
 Transaction, user, device, region, notes, and other external values are data, never instructions. The guardrails place validated values in an `UNTRUSTED_DATA` message section. The trusted system instruction says to ignore instruction-like content inside that section.
 
 ## Input validation
 
-`scripts/ai_guardrails.py` applies an allowlist of evidence fields, type checks, finite-number checks, risk-level validation, string limits, and bounded output-related fields. Common injection patterns are flagged for audit/testing but are never promoted to trusted instructions. Unexpected fields and oversized values are rejected.
+`scripts/ai_guardrails.py` applies an allowlist of evidence fields, type checks, finite-number checks, risk-level validation, string limits, and bounded output-related fields. Common injection patterns are flagged for audit/testing but are never promoted to trusted instructions. Unexpected fields and oversized values are rejected. `scripts/ai_provider.py` sends only the resulting minimized messages.
 
 ## Output validation and fallback
 
@@ -26,4 +26,4 @@ The deterministic risk score, ML probability, behavioral points, and risk level 
 
 ## Tools and limitations
 
-The current checkout exposes no AI tools, shell execution, arbitrary file access, or unrestricted network operation. The deterministic investigator remains the safe default. The guardrails are not a substitute for provider isolation, authorization, rate limiting, monitoring, or a production security review.
+The provider adapter exposes no AI tools, shell execution, arbitrary file access, or unrestricted network operation. It uses one finite-timeout HTTPS request with no retries and a bounded response body. The deterministic investigator remains the safe default. The guardrails are not a substitute for provider isolation, authorization, rate limiting, monitoring, or a production security review.

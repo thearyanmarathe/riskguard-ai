@@ -36,6 +36,13 @@ RULE_KEYS = (
     "high_transaction_velocity", "unusual_device", "unusual_region",
     "high_transaction_amount", "high_amount_deviation",
 )
+AI_EVIDENCE_FIELDS = {
+    "source_row_id", "Time", "Amount", "ml_fraud_probability", "ml_signal_available",
+    "behavioral_rule_points", "ml_risk_points", "risk_score", "risk_level", "triggered_rules",
+    "risk_explanation", "transaction_velocity", "historical_average_amount", "amount_deviation",
+    *[f"{rule}_triggered" for rule in RULE_KEYS],
+    *[f"{rule}_explanation" for rule in RULE_KEYS],
+}
 ALLOWED_EVIDENCE_FIELDS = {
     "source_row_id", "Time", "Amount", "Class", "ml_fraud_probability", "ml_signal_available",
     "behavioral_rule_points", "ml_risk_points", "risk_score", "risk_level", "triggered_rules",
@@ -127,7 +134,11 @@ def build_ai_messages(record: Mapping[str, Any]) -> list[dict[str, str]]:
         "history, locations, devices, probabilities, scores, or rules. Do not override the deterministic risk result. "
         "Return only the documented structured response and one allowed recommendation."
     )
-    user = "UNTRUSTED_DATA\n" + json.dumps(evidence, sort_keys=True, ensure_ascii=False)
+    # Minimize provider exposure: target labels and identifying synthetic IDs
+    # are not needed to explain the deterministic evidence.
+    provider_evidence = {key: evidence[key] for key in sorted(AI_EVIDENCE_FIELDS) if key in evidence}
+    provider_evidence["prompt_injection_detected"] = evidence["prompt_injection_detected"]
+    user = "UNTRUSTED_DATA\n" + json.dumps(provider_evidence, sort_keys=True, ensure_ascii=False)
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
@@ -158,6 +169,8 @@ def validate_ai_output(raw: Any) -> dict[str, Any]:
     evidence = [_bounded_string(item, "evidence", MAX_LIST_ITEM_LENGTH) for item in evidence]
     if any(not item.strip() for item in factors + evidence):
         raise GuardrailError("risk factors and evidence entries cannot be empty")
+    if any(contains_prompt_injection(item) for item in [summary, *factors, *evidence]):
+        raise GuardrailError("AI output contains instruction-like prompt content")
     action = _bounded_string(raw["recommended_action"], "recommended_action", 40)
     if action not in ALLOWED_ACTIONS:
         raise GuardrailError("recommended_action is not allowed")
