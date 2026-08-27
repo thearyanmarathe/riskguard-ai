@@ -26,6 +26,7 @@ RULE_DISPLAY_NAMES = {
     "unusual_device": "Unusual Device",
     "unusual_region": "Unusual Region",
     "high_transaction_amount": "High Transaction Amount",
+    "high_amount_deviation": "High Amount Deviation",
 }
 
 
@@ -163,12 +164,14 @@ def main() -> None:
         scenario_from_actual("Low ML probability with one behavioral rule", select_actual(data, "low ML/one rule", data["trigger_count"].eq(1), [True, True])),
     ]
     for rule in RULES:
-        scenarios.append(
-            scenario_from_actual(
-                f"{rule.replace('_', ' ').title()} alone",
-                select_actual(data, f"{rule} alone", data[f"{rule}_triggered"] & data["trigger_count"].eq(1), [True, True]),
+        alone = data[f"{rule}_triggered"] & data["trigger_count"].eq(1)
+        if alone.any():
+            scenarios.append(
+                scenario_from_actual(
+                    f"{rule.replace('_', ' ').title()} alone",
+                    select_actual(data, f"{rule} alone", alone, [True, True]),
+                )
             )
-        )
     scenarios.extend(
         [
             scenario_from_actual("Multiple behavioral signals", select_actual(data, "multiple rules", data["trigger_count"].ge(2), [True, True])),
@@ -253,7 +256,7 @@ The capping case has ML contribution 60 and all current behavioral rules (75 poi
 
 ## Independent rule contribution checks
 
-Each "alone" saved-transaction scenario above has exactly one triggered rule. The observed behavioral points are therefore exactly the configured contribution: velocity 20, unusual device 20, unusual region 15, and high amount 20. Multi-rule scenarios show that contributions add before the score cap is applied.
+Each available "alone" saved-transaction scenario above has exactly one triggered rule. The observed behavioral points are therefore exactly the configured contribution. If the saved sample has no transaction for a rule in isolation, that evidence-only scenario is omitted rather than invented. Multi-rule scenarios show that contributions add before the score cap is applied.
 
 {markdown_table(explanation_table)}
 

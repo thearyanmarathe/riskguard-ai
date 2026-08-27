@@ -1,0 +1,17 @@
+.git
+.gitignore
+.venv
+.env
+__pycache__
+*.py[cod]
+.pytest_cache
+.streamlit
+data/raw
+data/*.db
+data/*.db-*
+reports/evaluation
+reports/e2e
+reports/investigator
+tests
+docs
+*.log
