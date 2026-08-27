@@ -1,5 +1,7 @@
 altair==6.2.2
 
+fastapi==0.116.1
+
 anyio==4.14.2
 
 argon2-cffi==25.1.0
