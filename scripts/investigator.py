@@ -12,10 +12,11 @@ from typing import Any
 
 
 RULES = (
-    ("high_transaction_velocity", "High transaction velocity"),
-    ("unusual_device", "Unusual device"),
-    ("unusual_region", "Unusual region"),
-    ("high_transaction_amount", "High transaction amount"),
+    ("high_transaction_velocity", "High transaction velocity", 20),
+    ("unusual_device", "Unusual device", 20),
+    ("unusual_region", "Unusual region", 15),
+    ("high_transaction_amount", "High transaction amount", 20),
+    ("high_amount_deviation", "High amount deviation", 20),
 )
 RECOMMENDATIONS = {
     "LOW": "No immediate escalation recommended.",
@@ -49,7 +50,7 @@ class DeterministicInvestigator:
             raise ValueError(f"Unsupported risk level: {risk_level}")
 
         triggered_rules = []
-        for key, name in RULES:
+        for key, name, points in RULES:
             trigger_key = f"{key}_triggered"
             explanation_key = f"{key}_explanation"
             if trigger_key in record and _as_bool(record[trigger_key]):
@@ -57,6 +58,7 @@ class DeterministicInvestigator:
                     {
                         "rule_name": name,
                         "triggered": True,
+                        "points": points,
                         "evidence": str(record.get(explanation_key, "No stored rule explanation available.")),
                     }
                 )
@@ -98,6 +100,8 @@ class DeterministicInvestigator:
                 "device_id": str(record.get("device_id", "not supplied")),
                 "region": str(record.get("region", "not supplied")),
                 "transaction_velocity": int(record["transaction_velocity"]) if "transaction_velocity" in record else None,
+                "historical_average_amount": float(record["historical_average_amount"]) if "historical_average_amount" in record else None,
+                "amount_deviation": float(record["amount_deviation"]) if "amount_deviation" in record else None,
                 "disclaimer": "These fields are synthetic demo metadata, not Kaggle customer data.",
             },
             "key_risk_signals": key_signals,
@@ -117,7 +121,9 @@ def report_to_markdown(report: Mapping[str, Any]) -> str:
     risk = report["risk_assessment"]
     context = report["synthetic_demo_context"]
     rules = report["triggered_behavioral_rules"]
-    rule_lines = "\n".join(f"- **{rule['rule_name']}**: {rule['evidence']}" for rule in rules) or "- No behavioral rules triggered."
+    rule_lines = "\n".join(
+        f"- **{rule['rule_name']}** ({rule['points']} points): {rule['evidence']}" for rule in rules
+    ) or "- No behavioral rules triggered."
     signal_lines = "\n".join(f"- {signal}" for signal in report["key_risk_signals"])
     return f"""## Investigation: Source Row {transaction['source_row_id']}
 
@@ -139,7 +145,7 @@ def report_to_markdown(report: Mapping[str, Any]) -> str:
 
 ### Synthetic demo context
 
-- User: `{context['user_id']}`; device: `{context['device_id']}`; region: `{context['region']}`; velocity: {context['transaction_velocity']}.
+- User: `{context['user_id']}`; device: `{context['device_id']}`; region: `{context['region']}`; velocity: {context['transaction_velocity']}; historical average amount: {context['historical_average_amount']}; amount deviation: {context['amount_deviation']}.
 - {context['disclaimer']}
 
 ### Investigation summary

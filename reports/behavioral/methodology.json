@@ -37,7 +37,9 @@
     "user_id",
     "device_id",
     "region",
-    "transaction_velocity"
+    "transaction_velocity",
+    "historical_average_amount",
+    "amount_deviation"
   ],
   "random_seed": 42,
   "transactions_enriched": 5000,
@@ -49,25 +51,41 @@
     "median": 8.363927918253466e-06,
     "transactions_scored": 5000
   },
+  "amount_deviation_summary": {
+    "median": 0.45027382316915454,
+    "p90": 6.294504889450149,
+    "p95": 12.094104623629054,
+    "p99": 41.56711817544564,
+    "maximum": 738.9985289665783,
+    "threshold": 3.0,
+    "triggered_count": 903
+  },
   "rule_trigger_counts": {
     "high_transaction_velocity": 59,
     "unusual_device": 598,
     "unusual_region": 460,
-    "high_transaction_amount": 50
+    "high_transaction_amount": 50,
+    "high_amount_deviation": 903
   },
   "synthetic_fields": [
     "user_id",
     "device_id",
     "region",
-    "transaction_velocity"
+    "transaction_velocity",
+    "historical_average_amount",
+    "amount_deviation"
   ],
   "velocity_threshold": 6,
   "amount_threshold": 1115.6277000000034,
+  "amount_deviation_threshold": 3.0,
+  "historical_average_generation": "Seeded lognormal user-level synthetic baseline; independent of Amount, Class, model predictions, and risk scores",
+  "history_seed_offset": 1001,
   "rule_points": {
     "high_transaction_velocity": 20,
     "unusual_device": 20,
     "unusual_region": 15,
-    "high_transaction_amount": 20
+    "high_transaction_amount": 20,
+    "high_amount_deviation": 20
   },
   "risk_formula": "min(100, 60 * ml_fraud_probability + behavioral rule points)",
   "risk_levels": {

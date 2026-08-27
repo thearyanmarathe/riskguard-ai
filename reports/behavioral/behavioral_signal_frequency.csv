@@ -1,0 +1,6 @@
+signal,field,points,triggered_count,triggered_percent,explanations_present_when_triggered
+High Transaction Velocity,high_transaction_velocity,20,59,1.18,True
+Unusual Device,unusual_device,20,598,11.959999999999999,True
+Unusual Region,unusual_region,15,460,9.2,True
+High Transaction Amount,high_transaction_amount,20,50,1.0,True
+High Amount Deviation,high_amount_deviation,20,903,18.060000000000002,True

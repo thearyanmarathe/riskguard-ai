@@ -6,4 +6,4 @@ It uses no generative text, no extra transaction data, and no inferred facts. Th
 
 An LLM could later be added behind an interface taking this structured report as input, with instructions to restate only supplied evidence. The deterministic investigator remains the default fallback and requires no API key.
 
-Synthetic `user_id`, `device_id`, `region`, and `transaction_velocity` are always labelled as demo metadata, not real Kaggle customer information. The raw CSV is never read or modified by this phase.
+Synthetic `user_id`, `device_id`, `region`, `transaction_velocity`, `historical_average_amount`, and `amount_deviation` are always labelled as demo metadata, not real Kaggle customer information. The raw CSV is never read or modified by this phase.

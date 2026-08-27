@@ -15,7 +15,14 @@ from pathlib import Path
 import pandas as pd
 from xgboost import XGBClassifier
 
-from behavioral_context import add_risk_assessment, add_synthetic_context, apply_behavioral_rules, methodology, rule_counts
+from behavioral_context import (
+    AMOUNT_DEVIATION_THRESHOLD,
+    add_risk_assessment,
+    add_synthetic_context,
+    apply_behavioral_rules,
+    methodology,
+    rule_counts,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -57,12 +64,14 @@ def main() -> None:
     assessed = add_risk_assessment(assessed, ml_probability)
 
     counts = rule_counts(assessed)
+    deviation_summary = assessed["amount_deviation"].describe(percentiles=[0.50, 0.90, 0.95, 0.99]).to_dict()
     output_columns = [
         "source_row_id", "Time", "Amount", "Class", "user_id", "device_id", "region", "transaction_velocity",
+        "historical_average_amount", "amount_deviation",
         "ml_fraud_probability", "ml_signal_available", "high_transaction_velocity_triggered",
-        "unusual_device_triggered", "unusual_region_triggered", "high_transaction_amount_triggered",
+        "unusual_device_triggered", "unusual_region_triggered", "high_transaction_amount_triggered", "high_amount_deviation_triggered",
         "high_transaction_velocity_explanation", "unusual_device_explanation", "unusual_region_explanation",
-        "high_transaction_amount_explanation",
+        "high_transaction_amount_explanation", "high_amount_deviation_explanation",
         "behavioral_rule_points", "ml_risk_points", "risk_score", "risk_level", "triggered_rules", "risk_explanation",
     ]
     assessed.loc[:, output_columns].to_csv(OUTPUT_DIR / "behavioral_risk_assessments.csv", index=False)
@@ -72,7 +81,10 @@ def main() -> None:
     metadata = {
         "source": "data/raw/creditcard.csv",
         "raw_columns": ["Time", *[f"V{number}" for number in range(1, 29)], "Amount", "Class"],
-        "synthetic_demo_columns": ["user_id", "device_id", "region", "transaction_velocity"],
+        "synthetic_demo_columns": [
+            "user_id", "device_id", "region", "transaction_velocity",
+            "historical_average_amount", "amount_deviation",
+        ],
         "random_seed": RANDOM_SEED,
         "transactions_enriched": len(assessed),
         "ml_signal": ml_status,
@@ -82,6 +94,15 @@ def main() -> None:
             "mean": float(assessed["ml_fraud_probability"].mean()),
             "median": float(assessed["ml_fraud_probability"].median()),
             "transactions_scored": int(assessed["ml_fraud_probability"].notna().sum()),
+        },
+        "amount_deviation_summary": {
+            "median": float(deviation_summary["50%"]),
+            "p90": float(deviation_summary["90%"]),
+            "p95": float(deviation_summary["95%"]),
+            "p99": float(deviation_summary["99%"]),
+            "maximum": float(deviation_summary["max"]),
+            "threshold": AMOUNT_DEVIATION_THRESHOLD,
+            "triggered_count": counts["high_amount_deviation"],
         },
         "rule_trigger_counts": counts,
         **methodology(amount_threshold, VELOCITY_THRESHOLD),
@@ -98,11 +119,11 @@ def main() -> None:
 ## Data separation
 
 - **Real Kaggle fields:** `Time`, `V1`–`V28`, `Amount`, and `Class`. These are read from `data/raw/creditcard.csv` without modification.
-- **Synthetic demo fields:** `user_id`, `device_id`, `region`, and `transaction_velocity`. They are deterministic fabricated metadata for this classroom/demo layer; they do not come from Kaggle and are not ML model inputs.
+- **Synthetic demo fields:** `user_id`, `device_id`, `region`, `transaction_velocity`, `historical_average_amount`, and `amount_deviation`. They are deterministic fabricated metadata for this classroom/demo layer; they do not come from Kaggle and are not ML model inputs.
 
 ## Synthetic methodology
 
-A deterministic random subset of {len(assessed):,} Kaggle transactions was selected with seed {RANDOM_SEED}. Synthetic users have a deterministic usual device and usual region; 12% of generated device assignments and 10% of generated region assignments are deliberately different, enabling rule-engine demonstrations. `transaction_velocity` is a synthetic Poisson-generated count in a hypothetical recent window, not real customer behavior.
+A deterministic random subset of {len(assessed):,} Kaggle transactions was selected with seed {RANDOM_SEED}. Synthetic users have a deterministic usual device and usual region; 12% of generated device assignments and 10% of generated region assignments are deliberately different, enabling rule-engine demonstrations. `transaction_velocity` is a synthetic Poisson-generated count in a hypothetical recent window, not real customer behavior. `historical_average_amount` is a seeded, user-level synthetic baseline generated independently of `Amount` and `Class`; it is not real customer history. `amount_deviation = Amount / historical_average_amount`, with safe handling for near-zero baselines. In the generated distribution, the median was {deviation_summary['50%']:.3f}, the 90th percentile {deviation_summary['90%']:.3f}, the 95th percentile {deviation_summary['95%']:.3f}, the 99th percentile {deviation_summary['99%']:.3f}, and the maximum {deviation_summary['max']:.3f}. The fixed demonstration threshold of {AMOUNT_DEVIATION_THRESHOLD:.1f} triggers {counts['high_amount_deviation']:,} transactions ({counts['high_amount_deviation'] / len(assessed):.2%}); it was selected after inspecting this distribution and is not learned from production outcomes.
 
 ## ML signal status
 
@@ -118,14 +139,15 @@ Across the 5,000 scored transactions, ML probability is minimum {assessed["ml_fr
 | Unusual device | Synthetic device differs from the user's synthetic usual device | 20 | {counts['unusual_device']:,} |
 | Unusual region | Synthetic region differs from the user's synthetic usual region | 15 | {counts['unusual_region']:,} |
 | High transaction amount | Real `Amount` >= subset 99th percentile ({amount_threshold:.2f}) | 20 | {counts['high_transaction_amount']:,} |
+| High amount deviation | `Amount / historical_average_amount` >= {AMOUNT_DEVIATION_THRESHOLD:.1f} | 20 | {counts['high_amount_deviation']:,} |
 
-Each rule produces a boolean trigger and a short explanation. The assessment output includes all four trigger and explanation columns, plus the combined triggered-rule names and risk explanation.
+Each rule produces a boolean trigger and a short explanation. The assessment output includes all five trigger and explanation columns, plus the combined triggered-rule names and risk explanation. The amount-deviation rule is a demonstration heuristic, not a production-learned rule.
 
 ## Risk assessment
 
 `risk_score = min(100, 60 × ml_fraud_probability + behavioral rule points)`.
 
-Rule points are 20 (velocity), 20 (device), 15 (region), and 20 (amount). Risk levels are **LOW** below 25, **MEDIUM** from 25 to below 50, and **HIGH** at 50 or greater. This is a transparent demonstration formula, not a production-validated financial risk score.
+Rule points are 20 (velocity), 20 (device), 15 (region), 20 (amount), and 20 (amount deviation). Risk levels are **LOW** below 25, **MEDIUM** from 25 to below 50, and **HIGH** at 50 or greater. This is a transparent demonstration formula, not a production-validated financial risk score.
 
 ## Example assessments
 

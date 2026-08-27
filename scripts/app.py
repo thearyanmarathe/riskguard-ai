@@ -32,6 +32,7 @@ RULE_DISPLAY_NAMES = {
     "unusual_device": "Unusual device",
     "unusual_region": "Unusual region",
     "high_transaction_amount": "High transaction amount",
+    "high_amount_deviation": "High amount deviation",
 }
 REQUIRED_COLUMNS = {
     "source_row_id", "Time", "Amount", "Class", "user_id", "device_id", "region", "transaction_velocity",
@@ -39,6 +40,7 @@ REQUIRED_COLUMNS = {
     "triggered_rules", "risk_explanation",
     *[f"{rule}_triggered" for rule in RULE_POINTS],
     *[f"{rule}_explanation" for rule in RULE_POINTS],
+    "historical_average_amount", "amount_deviation",
 }
 
 
@@ -159,6 +161,8 @@ def main() -> None:
                 [{
                     "user_id": record["user_id"], "device_id": record["device_id"], "region": record["region"],
                     "transaction_velocity": record["transaction_velocity"],
+                    "historical_average_amount": record["historical_average_amount"],
+                    "amount_deviation": record["amount_deviation"],
                 }]
             ),
             hide_index=True,

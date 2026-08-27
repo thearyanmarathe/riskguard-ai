@@ -12,14 +12,20 @@ import numpy as np
 import pandas as pd
 
 
-SYNTHETIC_COLUMNS = ["user_id", "device_id", "region", "transaction_velocity"]
+SYNTHETIC_COLUMNS = [
+    "user_id", "device_id", "region", "transaction_velocity",
+    "historical_average_amount", "amount_deviation",
+]
 REGIONS = np.array(["North", "South", "East", "West", "Central"])
 RULE_POINTS = {
     "high_transaction_velocity": 20,
     "unusual_device": 20,
     "unusual_region": 15,
     "high_transaction_amount": 20,
+    "high_amount_deviation": 20,
 }
+AMOUNT_DEVIATION_THRESHOLD = 3.0
+HISTORY_SEED_OFFSET = 1001
 
 
 def add_synthetic_context(transactions: pd.DataFrame, seed: int) -> pd.DataFrame:
@@ -48,6 +54,18 @@ def add_synthetic_context(transactions: pd.DataFrame, seed: int) -> pd.DataFrame
     # Synthetic count of prior transactions in a recent window; it has no
     # relationship to a real customer's transaction history.
     enriched["transaction_velocity"] = rng.poisson(lam=1.8, size=len(enriched))
+
+    # A separate seeded user-level baseline creates synthetic demonstration
+    # history. It is independent of Amount, Class, model output, and scores.
+    history_rng = np.random.default_rng(seed + HISTORY_SEED_OFFSET)
+    user_historical_averages = history_rng.lognormal(mean=3.8, sigma=0.9, size=500)
+    enriched["historical_average_amount"] = user_historical_averages[user_numbers - 1]
+    enriched["amount_deviation"] = np.divide(
+        enriched["Amount"].to_numpy(dtype=float),
+        enriched["historical_average_amount"].to_numpy(dtype=float),
+        out=np.zeros(len(enriched), dtype=float),
+        where=enriched["historical_average_amount"].to_numpy(dtype=float) > 1e-9,
+    )
     return enriched
 
 
@@ -62,6 +80,7 @@ def apply_behavioral_rules(enriched: pd.DataFrame, amount_threshold: float, velo
     assessed["unusual_device_triggered"] = assessed["device_id"].to_numpy() != expected_devices
     assessed["unusual_region_triggered"] = assessed["region"].to_numpy() != expected_regions
     assessed["high_transaction_amount_triggered"] = assessed["Amount"] >= amount_threshold
+    assessed["high_amount_deviation_triggered"] = assessed["amount_deviation"] >= AMOUNT_DEVIATION_THRESHOLD
 
     assessed["high_transaction_velocity_explanation"] = np.where(
         assessed["high_transaction_velocity_triggered"],
@@ -82,6 +101,11 @@ def apply_behavioral_rules(enriched: pd.DataFrame, amount_threshold: float, velo
         assessed["high_transaction_amount_triggered"],
         f"Real Kaggle Amount is at or above the subset 99th-percentile threshold ({amount_threshold:.2f}).",
         f"Real Kaggle Amount is below the subset 99th-percentile threshold ({amount_threshold:.2f}).",
+    )
+    assessed["high_amount_deviation_explanation"] = np.where(
+        assessed["high_amount_deviation_triggered"],
+        f"Synthetic amount is at least {AMOUNT_DEVIATION_THRESHOLD:.1f} times the synthetic historical average.",
+        f"Synthetic amount is below {AMOUNT_DEVIATION_THRESHOLD:.1f} times the synthetic historical average.",
     )
     return assessed
 
@@ -138,6 +162,11 @@ def methodology(amount_threshold: float, velocity_threshold: int) -> dict[str, A
         "synthetic_fields": SYNTHETIC_COLUMNS,
         "velocity_threshold": velocity_threshold,
         "amount_threshold": amount_threshold,
+        "amount_deviation_threshold": AMOUNT_DEVIATION_THRESHOLD,
+        "historical_average_generation": (
+            "Seeded lognormal user-level synthetic baseline; independent of Amount, Class, model predictions, and risk scores"
+        ),
+        "history_seed_offset": HISTORY_SEED_OFFSET,
         "rule_points": RULE_POINTS,
         "risk_formula": "min(100, 60 * ml_fraud_probability + behavioral rule points)",
         "risk_levels": {"LOW": "score < 25", "MEDIUM": "25 <= score < 50", "HIGH": "score >= 50"},

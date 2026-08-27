@@ -1,0 +1,42 @@
+[
+  {
+    "transaction": {
+      "source_row_id": 595,
+      "time": 446.0,
+      "amount": 64.0
+    },
+    "risk_assessment": {
+      "risk_level": "LOW",
+      "risk_score": 20.01,
+      "ml_fraud_probability": 0.00011482175,
+      "behavioral_rule_points": 20.0,
+      "risk_explanation": "Risk score 20.01: 20 behavioral-rule points and 0.01 ML points. Triggered rules: High Amount Deviation."
+    },
+    "synthetic_demo_context": {
+      "user_id": "demo_user_359",
+      "device_id": "demo_device_159",
+      "region": "West",
+      "transaction_velocity": 1,
+      "historical_average_amount": 17.0079154766171,
+      "amount_deviation": 3.762953789839136,
+      "disclaimer": "These fields are synthetic demo metadata, not Kaggle customer data."
+    },
+    "key_risk_signals": [
+      "Saved Phase 2 XGBoost baseline fraud probability: 0.000115.",
+      "Transparent risk score: 20.01 (LOW).",
+      "Behavioral-rule points: 20.",
+      "Triggered behavioral rules: High amount deviation."
+    ],
+    "triggered_behavioral_rules": [
+      {
+        "rule_name": "High amount deviation",
+        "triggered": true,
+        "points": 20,
+        "evidence": "Synthetic amount is at least 3.0 times the synthetic historical average."
+      }
+    ],
+    "investigation_summary": "Source row 595 has a LOW transparent risk assessment with score 20.01. The saved XGBoost baseline output is 0.000115, and triggered behavioral rules contribute 20 points. This identifies signals for review; it does not prove fraud.",
+    "recommended_investigation_action": "No immediate escalation recommended.",
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+  }
+]
