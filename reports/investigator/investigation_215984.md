@@ -5,7 +5,7 @@
 | Field | Value |
 | --- | --- |
 | Risk level | HIGH |
-| Risk score | 75.00 |
+| Risk score | 95.00 |
 | ML fraud probability | 0.999988 |
 | Time | 140308.00 |
 | Amount | 592.90 |
@@ -13,22 +13,23 @@
 ### Key risk signals
 
 - Saved Phase 2 XGBoost baseline fraud probability: 0.999988.
-- Transparent risk score: 75.00 (HIGH).
-- Behavioral-rule points: 15.
-- Triggered behavioral rules: Unusual region.
+- Transparent risk score: 95.00 (HIGH).
+- Behavioral-rule points: 35.
+- Triggered behavioral rules: Unusual region, High amount deviation.
 
 ### Triggered behavioral rules and evidence
 
-- **Unusual region**: Synthetic region differs from this demo user's usual region.
+- **Unusual region** (15 points): Synthetic region differs from this demo user's usual region.
+- **High amount deviation** (20 points): Synthetic amount is at least 3.0 times the synthetic historical average.
 
 ### Synthetic demo context
 
-- User: `demo_user_052`; device: `demo_device_052`; region: `East`; velocity: 1.
+- User: `demo_user_052`; device: `demo_device_052`; region: `East`; velocity: 1; historical average amount: 62.769051944487785; amount deviation: 9.445737694498776.
 - These fields are synthetic demo metadata, not Kaggle customer data.
 
 ### Investigation summary
 
-Source row 215984 has a HIGH transparent risk assessment with score 75.00. The saved XGBoost baseline output is 0.999988, and triggered behavioral rules contribute 15 points. This identifies signals for review; it does not prove fraud.
+Source row 215984 has a HIGH transparent risk assessment with score 95.00. The saved XGBoost baseline output is 0.999988, and triggered behavioral rules contribute 35 points. This identifies signals for review; it does not prove fraud.
 
 ### Recommended action
 
