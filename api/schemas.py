@@ -30,6 +30,8 @@ class InvestigationDetails(BaseModel):
 
 
 class InvestigationResponse(BaseModel):
+    persistence_id: int | None = None
+    created_at: str | None = None
     source_row_id: int
     amount: float
     ml_fraud_probability: float
@@ -40,3 +42,7 @@ class InvestigationResponse(BaseModel):
     investigation: InvestigationDetails
     provider_used: bool
     fallback_used: bool
+
+
+class InvestigationListResponse(BaseModel):
+    investigations: list[InvestigationResponse]

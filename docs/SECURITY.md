@@ -27,3 +27,13 @@ The deterministic risk score, ML probability, behavioral points, and risk level 
 ## Tools and limitations
 
 The provider adapter exposes no AI tools, shell execution, arbitrary file access, or unrestricted network operation. It uses one finite-timeout HTTPS request with no retries and a bounded response body. The deterministic investigator remains the safe default. The guardrails are not a substitute for provider isolation, authorization, rate limiting, monitoring, or a production security review.
+
+## SQLite persistence
+
+Phase 15 stores only validated application results in `data/riskguard.db`.
+The database contains no raw Kaggle rows, V1–V28 vectors, prompts, API keys,
+provider credentials, or filesystem paths. SQLAlchemy ORM operations and
+bounded validated identifiers and limits protect the repository boundary from
+raw SQL injection. The local database has no authentication or retention
+policy; production use requires access controls, retention, and encryption or
+backup review.

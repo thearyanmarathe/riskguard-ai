@@ -36,7 +36,8 @@ The response contains the application-owned amount, ML probability,
 behavioral points, risk score, risk level, triggered rule evidence, and a
 structured investigation explanation. `provider_used` and `fallback_used`
 identify the Phase 12 path. The response schema is allowlisted with Pydantic;
-arbitrary provider fields are not returned.
+arbitrary provider fields are not returned. Successful responses also contain
+a local `persistence_id` and UTC `created_at` timestamp.
 
 Example:
 
@@ -73,3 +74,17 @@ PostgreSQL, TLS termination, or deployment configuration. A production
 deployment needs those controls, plus monitoring and real behavioral history.
 The API reads the existing saved assessment only and never modifies
 `data/raw/creditcard.csv`.
+
+## `GET /investigations/{investigation_id}`
+
+Returns a previously persisted, validated investigation by its positive
+integer `persistence_id`. Missing records return `404`.
+
+## `GET /investigations`
+
+Returns recent persisted investigations in deterministic newest-first order.
+Optional `source_row_id` filtering is supported. `limit` defaults to 20 and
+is bounded from 1 through 100.
+
+Repeated `POST /investigate` calls create new persistence records. The API
+does not implement distributed idempotency.
