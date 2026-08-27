@@ -121,10 +121,20 @@ def report_to_markdown(report: Mapping[str, Any]) -> str:
     risk = report["risk_assessment"]
     context = report["synthetic_demo_context"]
     rules = report["triggered_behavioral_rules"]
+    mode = report.get("investigation_mode", "Deterministic Investigator")
     rule_lines = "\n".join(
         f"- **{rule['rule_name']}** ({rule['points']} points): {rule['evidence']}" for rule in rules
     ) or "- No behavioral rules triggered."
     signal_lines = "\n".join(f"- {signal}" for signal in report["key_risk_signals"])
+    ai_section = ""
+    if report.get("provider_used"):
+        ai_evidence = "\n".join(f"- {item}" for item in report.get("ai_evidence", [])) or "- None supplied."
+        ai_section = (
+            "### Validated AI explanation\n\n"
+            f"AI confidence: {report['ai_confidence']:.2f}\n\n"
+            "Advisory AI evidence:\n"
+            f"{ai_evidence}\n"
+        )
     return f"""## Investigation: Source Row {transaction['source_row_id']}
 
 | Field | Value |
@@ -134,6 +144,7 @@ def report_to_markdown(report: Mapping[str, Any]) -> str:
 | ML fraud probability | {risk['ml_fraud_probability']:.6f} |
 | Time | {transaction['time']:.2f} |
 | Amount | {transaction['amount']:.2f} |
+| Investigation mode | {mode} |
 
 ### Key risk signals
 
@@ -155,6 +166,8 @@ def report_to_markdown(report: Mapping[str, Any]) -> str:
 ### Recommended action
 
 {report['recommended_investigation_action']}
+
+{ai_section}
 
 ### Evidence boundary
 

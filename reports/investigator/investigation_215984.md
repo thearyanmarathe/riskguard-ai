@@ -9,6 +9,7 @@
 | ML fraud probability | 0.999988 |
 | Time | 140308.00 |
 | Amount | 592.90 |
+| Investigation mode | Deterministic Investigator |
 
 ### Key risk signals
 
@@ -34,6 +35,8 @@ Source row 215984 has a HIGH transparent risk assessment with score 95.00. The s
 ### Recommended action
 
 Prioritize this transaction for manual fraud investigation.
+
+
 
 ### Evidence boundary
 

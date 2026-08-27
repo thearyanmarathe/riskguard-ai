@@ -22,7 +22,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from behavioral_context import RULE_POINTS
-from investigator import DeterministicInvestigator
+from ai_investigator import ApplicationInvestigator
 
 
 ASSESSMENT_PATH = PROJECT_ROOT / "reports" / "behavioral" / "behavioral_risk_assessments.csv"
@@ -184,16 +184,26 @@ def main() -> None:
 
     st.header("AI Investigator")
     try:
-        investigation = DeterministicInvestigator().investigate(record)
+        investigation = ApplicationInvestigator().investigate(record)
     except (TypeError, ValueError) as error:
         st.error(f"The selected transaction could not be investigated: {error}")
         st.stop()
     st.subheader("Investigation summary")
+    st.caption(
+        f"Source: {investigation.get('investigation_mode', 'Deterministic Investigator')} "
+        "(risk values remain from the saved assessment)."
+    )
     st.write(investigation["investigation_summary"])
+    if investigation.get("provider_used"):
+        st.caption(f"Validated AI confidence: {investigation['ai_confidence']:.2f}; explanation is advisory only.")
     st.subheader("Key risk signals")
     for signal in investigation["key_risk_signals"]:
         st.write(f"- {signal}")
     st.subheader("Evidence")
+    if investigation.get("provider_used"):
+        st.write("Validated AI evidence:")
+        for evidence in investigation.get("ai_evidence", []):
+            st.write(f"- {evidence}")
     if investigation["triggered_behavioral_rules"]:
         for rule in investigation["triggered_behavioral_rules"]:
             st.write(f"- **{rule['rule_name']}**: {rule['evidence']}")

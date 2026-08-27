@@ -9,6 +9,7 @@
 | ML fraud probability | 0.067902 |
 | Time | 73615.00 |
 | Amount | 162.80 |
+| Investigation mode | Deterministic Investigator |
 
 ### Key risk signals
 
@@ -34,6 +35,8 @@ Source row 114771 has a LOW transparent risk assessment with score 24.07. The sa
 
 No immediate escalation recommended.
 
+
+
 ### Evidence boundary
 
 This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud.
@@ -49,6 +52,7 @@ This deterministic report uses only supplied assessment fields and stored rule e
 | ML fraud probability | 0.005729 |
 | Time | 121023.00 |
 | Amount | 2500.00 |
+| Investigation mode | Deterministic Investigator |
 
 ### Key risk signals
 
@@ -75,6 +79,8 @@ Source row 172250 has a MEDIUM transparent risk assessment with score 40.34. The
 
 Review the transaction and triggered behavioral signals.
 
+
+
 ### Evidence boundary
 
 This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud.
@@ -90,6 +96,7 @@ This deterministic report uses only supplied assessment fields and stored rule e
 | ML fraud probability | 0.999988 |
 | Time | 140308.00 |
 | Amount | 592.90 |
+| Investigation mode | Deterministic Investigator |
 
 ### Key risk signals
 
@@ -115,6 +122,8 @@ Source row 215984 has a HIGH transparent risk assessment with score 95.00. The s
 ### Recommended action
 
 Prioritize this transaction for manual fraud investigation.
+
+
 
 ### Evidence boundary
 

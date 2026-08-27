@@ -15,7 +15,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from investigator import DeterministicInvestigator, report_to_markdown
+from ai_investigator import ApplicationInvestigator
+from investigator import report_to_markdown
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -56,7 +57,7 @@ def main() -> None:
             raise ValueError(f"Source row {arguments.source_row_id} is not in the Phase 3 assessment output.")
         output_stem = f"investigation_{arguments.source_row_id}"
 
-    investigator = DeterministicInvestigator()
+    investigator = ApplicationInvestigator()
     reports = [investigator.investigate(record) for record in selected.to_dict(orient="records")]
     (OUTPUT_DIR / f"{output_stem}.json").write_text(json.dumps(reports, indent=2), encoding="utf-8")
     markdown = "# RiskGuard AI — Phase 4 Investigation Reports\n\n" + "\n---\n\n".join(report_to_markdown(report) for report in reports)
@@ -64,11 +65,11 @@ def main() -> None:
 
     methodology = """# RiskGuard AI — Phase 4 Investigator Methodology
 
-The investigator is deterministic and does not use an LLM or an external API. It accepts one Phase 3 assessment record and constructs a report from a fixed whitelist of fields already present in that record: source row, `Time`, `Amount`, ML probability, risk values, synthetic demo context, rule triggers, and stored rule explanations.
+The application Investigator first constructs the existing deterministic report from a fixed whitelist of fields already present in the Phase 3 assessment. If `AI_PROVIDER_API_KEY` is configured, the guarded optional provider may add a validated advisory explanation. Without a key, or after any provider failure or invalid output, the deterministic report is returned.
 
-It uses no generative text, no extra transaction data, and no inferred facts. The rule evidence is copied from the existing rule-engine explanation fields. Recommendations are fixed by the supplied risk level: LOW has no immediate escalation, MEDIUM recommends review, and HIGH recommends prioritised manual investigation. Every report states that it does not prove fraud.
+The deterministic path uses no generative text, no extra transaction data, and no inferred facts. Its rule evidence is copied from the existing rule-engine explanation fields. Deterministic recommendations are fixed by the supplied risk level: LOW has no immediate escalation, MEDIUM recommends review, and HIGH recommends prioritised manual investigation. Every report states that it does not prove fraud.
 
-An LLM could later be added behind an interface taking this structured report as input, with instructions to restate only supplied evidence. The deterministic investigator remains the default fallback and requires no API key.
+The deterministic risk level, score, ML probability, behavioral points, and stored rule evidence remain authoritative. The provider cannot execute actions or change those values; recommendations are advisory only. Provider input is minimized and excludes raw model features, labels, and synthetic identifiers.
 
 Synthetic `user_id`, `device_id`, `region`, `transaction_velocity`, `historical_average_amount`, and `amount_deviation` are always labelled as demo metadata, not real Kaggle customer information. The raw CSV is never read or modified by this phase.
 """

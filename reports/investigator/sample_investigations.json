@@ -37,7 +37,11 @@
     ],
     "investigation_summary": "Source row 114771 has a LOW transparent risk assessment with score 24.07. The saved XGBoost baseline output is 0.067902, and triggered behavioral rules contribute 20 points. This identifies signals for review; it does not prove fraud.",
     "recommended_investigation_action": "No immediate escalation recommended.",
-    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud.",
+    "provider_used": false,
+    "fallback_used": true,
+    "investigation_mode": "Deterministic Investigator",
+    "provider_status": "not_configured"
   },
   {
     "transaction": {
@@ -83,7 +87,11 @@
     ],
     "investigation_summary": "Source row 172250 has a MEDIUM transparent risk assessment with score 40.34. The saved XGBoost baseline output is 0.005729, and triggered behavioral rules contribute 40 points. This identifies signals for review; it does not prove fraud.",
     "recommended_investigation_action": "Review the transaction and triggered behavioral signals.",
-    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud.",
+    "provider_used": false,
+    "fallback_used": true,
+    "investigation_mode": "Deterministic Investigator",
+    "provider_status": "not_configured"
   },
   {
     "transaction": {
@@ -129,6 +137,10 @@
     ],
     "investigation_summary": "Source row 215984 has a HIGH transparent risk assessment with score 95.00. The saved XGBoost baseline output is 0.999988, and triggered behavioral rules contribute 35 points. This identifies signals for review; it does not prove fraud.",
     "recommended_investigation_action": "Prioritize this transaction for manual fraud investigation.",
-    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud."
+    "evidence_boundary": "This deterministic report uses only supplied assessment fields and stored rule explanations. It does not infer customer history, location, motive, account compromise, or proof of fraud.",
+    "provider_used": false,
+    "fallback_used": true,
+    "investigation_mode": "Deterministic Investigator",
+    "provider_status": "not_configured"
   }
 ]
