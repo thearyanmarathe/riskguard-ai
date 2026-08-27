@@ -114,3 +114,18 @@ Persistence failures are logged with only a safe error type and return a
 generic server error; SQL details and paths are not exposed. Log rotation,
 centralized access control, alerting, and operational monitoring remain
 deployment requirements.
+
+## Streamlit investigation console
+
+The Streamlit console is presentation-only. It reads bounded results through
+the existing investigation repository and saved assessment output; it does
+not write SQLite, invoke OpenAI directly, reload XGBoost to display stored
+probabilities, or reproduce risk/behavioral calculations. Risk score and risk
+level remain owned by the deterministic risk engine. AI content is advisory
+and deterministic fallback status is visible.
+
+The UI separates REAL KAGGLE DATA from **SYNTHETIC DEMO BEHAVIORAL METADATA**.
+It does not display V1–V28 vectors, prompts, credentials, raw CSV contents,
+filesystem paths, SQL, or provider secrets. Audit history is read-only and
+limited to persisted safe metadata. Missing records, unavailable databases,
+and missing optional context produce user-facing states without tracebacks.

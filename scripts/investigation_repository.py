@@ -7,7 +7,7 @@ import math
 from datetime import datetime, timezone
 from typing import Any, Mapping
 
-from sqlalchemy import CheckConstraint, DateTime, Float, ForeignKey, Index, Integer, String, Text, desc, select
+from sqlalchemy import CheckConstraint, DateTime, Float, ForeignKey, Index, Integer, String, Text, desc, func, select
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base, Database
@@ -178,6 +178,16 @@ class InvestigationRepository:
                 query = query.where(InvestigationModel.source_row_id == source_row_id)
             records = session.scalars(query.order_by(desc(InvestigationModel.created_at), desc(InvestigationModel.id)).limit(limit)).all()
             return [self._to_dict(record) for record in records]
+
+    def risk_level_counts(self) -> dict[str, int]:
+        """Return aggregate persisted counts without materializing records."""
+        with self.database.session() as session:
+            rows = session.execute(select(InvestigationModel.risk_level, func.count()).group_by(InvestigationModel.risk_level)).all()
+            counts = {"LOW": 0, "MEDIUM": 0, "HIGH": 0}
+            for risk_level, count in rows:
+                if risk_level in counts:
+                    counts[risk_level] = int(count)
+            return counts
 
     def list_events(self, investigation_id: int) -> list[dict[str, Any]]:
         if not isinstance(investigation_id, int) or isinstance(investigation_id, bool) or investigation_id <= 0:
