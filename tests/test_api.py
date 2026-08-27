@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -15,7 +16,16 @@ from api.main import app  # noqa: E402
 class ApiTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.client = TestClient(app)
+        cls.previous_key = os.environ.get("RISKGUARD_API_KEY")
+        os.environ["RISKGUARD_API_KEY"] = "test-api-key"
+        cls.client = TestClient(app, headers={"X-API-Key": "test-api-key"})
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls.previous_key is None:
+            os.environ.pop("RISKGUARD_API_KEY", None)
+        else:
+            os.environ["RISKGUARD_API_KEY"] = cls.previous_key
 
     def investigate(self, source_row_id: int):
         return self.client.post("/investigate", json={"source_row_id": source_row_id})

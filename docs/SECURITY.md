@@ -37,3 +37,19 @@ bounded validated identifiers and limits protect the repository boundary from
 raw SQL injection. The local database has no authentication or retention
 policy; production use requires access controls, retention, and encryption or
 backup review.
+
+## API authentication
+
+Investigation endpoints require `RISKGUARD_API_KEY` in the `X-API-Key`
+header. Authentication uses constant-time `hmac.compare_digest`; missing and
+incorrect keys return the same generic `401 Unauthorized` response. The
+public `/health` endpoint exposes only its health status.
+
+The application API key is separate from `AI_PROVIDER_API_KEY`. Neither key
+is written to source, tests, reports, logs, responses, prompts, or SQLite.
+Authentication is only access control and cannot influence ML probabilities,
+behavioral rules, risk scores, risk levels, or AI explanations.
+
+This simple key is not authentication suitable for all production use. Key
+rotation, TLS, rate limiting, stronger identity/authorization, and secure
+secret storage remain deployment requirements.

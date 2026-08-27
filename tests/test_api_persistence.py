@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tempfile
+import os
 import unittest
 from pathlib import Path
 
@@ -17,14 +18,20 @@ from investigation_repository import InvestigationRepository  # noqa: E402
 
 class ApiPersistenceTests(unittest.TestCase):
     def setUp(self) -> None:
+        self.previous_key = os.environ.get("RISKGUARD_API_KEY")
+        os.environ["RISKGUARD_API_KEY"] = "test-api-key"
         self.temp_directory = tempfile.TemporaryDirectory()
         self.previous_repository = api_main.repository
         api_main.repository = InvestigationRepository(Database(Path(self.temp_directory.name) / "api-test.db"))
-        self.client = TestClient(api_main.app)
+        self.client = TestClient(api_main.app, headers={"X-API-Key": "test-api-key"})
 
     def tearDown(self) -> None:
         api_main.repository.database.close()
         api_main.repository = self.previous_repository
+        if self.previous_key is None:
+            os.environ.pop("RISKGUARD_API_KEY", None)
+        else:
+            os.environ["RISKGUARD_API_KEY"] = self.previous_key
         self.temp_directory.cleanup()
 
     def test_post_get_and_list_persist_fallback_result(self) -> None:

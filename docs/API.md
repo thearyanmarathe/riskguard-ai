@@ -20,6 +20,22 @@ Returns:
 {"status":"ok"}
 ```
 
+`/health` is public and does not require authentication.
+
+## Authentication
+
+All investigation endpoints require the application key configured through
+the `RISKGUARD_API_KEY` environment variable:
+
+```powershell
+$env:RISKGUARD_API_KEY = "local-development-key"
+```
+
+Send it in the `X-API-Key` header. Missing or incorrect keys receive the same
+generic `401 Unauthorized` response. The OpenAI provider credential, if
+configured, is a separate `AI_PROVIDER_API_KEY` and is never used for API
+access.
+
 ## `POST /investigate`
 
 Request body:
@@ -43,6 +59,7 @@ Example:
 
 ```powershell
 curl.exe -X POST http://127.0.0.1:8000/investigate `
+  -H "X-API-Key: local-development-key" `
   -H "Content-Type: application/json" `
   -d '{"source_row_id":215984}'
 ```
@@ -70,8 +87,10 @@ executed.
 ## Security limitations
 
 This phase does not add authentication, authorization, rate limiting,
-PostgreSQL, TLS termination, or deployment configuration. A production
-deployment needs those controls, plus monitoring and real behavioral history.
+PostgreSQL, TLS termination, or deployment configuration. Authentication is
+provided by the single application key only. A production deployment still
+needs key rotation, rate limiting, TLS, stronger identity and authorization,
+monitoring, and real behavioral history.
 The API reads the existing saved assessment only and never modifies
 `data/raw/creditcard.csv`.
 

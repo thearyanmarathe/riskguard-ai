@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from ai_investigator import ApplicationInvestigator  # noqa: E402
+from api.auth import require_api_key  # noqa: E402
 from api.schemas import InvestigationDetails, InvestigationListResponse, InvestigationRequest, InvestigationResponse, TriggeredRule  # noqa: E402
 from database import Database  # noqa: E402
 from investigation_repository import InvestigationRepository  # noqa: E402
@@ -137,7 +138,7 @@ def _response_from_stored(stored: dict[str, Any]) -> InvestigationResponse:
     )
 
 
-@app.post("/investigate", response_model=InvestigationResponse)
+@app.post("/investigate", response_model=InvestigationResponse, dependencies=[Depends(require_api_key)])
 def investigate(request: InvestigationRequest) -> InvestigationResponse:
     record = _assessment_record(request.source_row_id)
     try:
@@ -151,7 +152,7 @@ def investigate(request: InvestigationRequest) -> InvestigationResponse:
         raise HTTPException(status_code=500, detail="Internal application failure.") from exc
 
 
-@app.get("/investigations/{investigation_id}", response_model=InvestigationResponse)
+@app.get("/investigations/{investigation_id}", response_model=InvestigationResponse, dependencies=[Depends(require_api_key)])
 def get_investigation(investigation_id: int) -> InvestigationResponse:
     if not 1 <= investigation_id <= 10_000_000:
         raise HTTPException(status_code=404, detail="Investigation not found.")
@@ -164,7 +165,7 @@ def get_investigation(investigation_id: int) -> InvestigationResponse:
     return _response_from_stored(stored)
 
 
-@app.get("/investigations", response_model=InvestigationListResponse)
+@app.get("/investigations", response_model=InvestigationListResponse, dependencies=[Depends(require_api_key)])
 def list_investigations(
     source_row_id: int | None = Query(default=None, ge=0, le=10_000_000),
     limit: int = Query(default=20, ge=1, le=100),

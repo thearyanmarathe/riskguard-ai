@@ -151,8 +151,11 @@ def main() -> None:
         return "valid output accepted; invalid, tampered, and disallowed-action outputs fell back"
 
     def api_validation() -> str:
-        client = TestClient(app)
-        with patch.dict(os.environ, {}, clear=True):
+        client = TestClient(app, headers={"X-API-Key": "phase16-test-key"})
+        test_environment = os.environ.copy()
+        test_environment["RISKGUARD_API_KEY"] = "phase16-test-key"
+        test_environment.pop("AI_PROVIDER_API_KEY", None)
+        with patch.dict(os.environ, test_environment, clear=True):
             for source_row_id, expected_level in REPRESENTATIVE.items():
                 response = client.post("/investigate", json={"source_row_id": source_row_id})
                 body = response.json()

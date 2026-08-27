@@ -41,7 +41,16 @@ class EndToEndTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.assessments = pd.read_csv(ASSESSMENT_PATH)
-        cls.client = TestClient(app)
+        cls.previous_key = os.environ.get("RISKGUARD_API_KEY")
+        os.environ["RISKGUARD_API_KEY"] = "test-api-key"
+        cls.client = TestClient(app, headers={"X-API-Key": "test-api-key"})
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        if cls.previous_key is None:
+            os.environ.pop("RISKGUARD_API_KEY", None)
+        else:
+            os.environ["RISKGUARD_API_KEY"] = cls.previous_key
 
     def row(self, source_row_id: int) -> dict[str, object]:
         return self.assessments.loc[self.assessments["source_row_id"] == source_row_id].iloc[0].to_dict()
@@ -127,7 +136,9 @@ class EndToEndTests(unittest.TestCase):
 
     def test_raw_hash_is_stable(self) -> None:
         before = raw_hash()
-        with patch.dict(os.environ, {}, clear=True):
+        test_environment = os.environ.copy()
+        test_environment.pop("AI_PROVIDER_API_KEY", None)
+        with patch.dict(os.environ, test_environment, clear=True):
             ApplicationInvestigator().investigate(self.row(215984))
         self.assertEqual(before, raw_hash())
 
