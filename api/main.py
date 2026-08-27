@@ -21,10 +21,11 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from ai_investigator import ApplicationInvestigator  # noqa: E402
 from api.auth import require_api_key  # noqa: E402
+from api.rate_limit import LocalRateLimiter  # noqa: E402
 from api.schemas import InvestigationDetails, InvestigationListResponse, InvestigationRequest, InvestigationResponse, TriggeredRule  # noqa: E402
 from database import Database  # noqa: E402
 from investigation_repository import InvestigationRepository  # noqa: E402
-from observability import duration_ms, log_event, new_request_id, reset_request_id, set_request_id  # noqa: E402
+from observability import current_request_id, duration_ms, log_event, new_request_id, reset_request_id, set_request_id  # noqa: E402
 
 
 ASSESSMENT_PATH = PROJECT_ROOT / "reports" / "behavioral" / "behavioral_risk_assessments.csv"
@@ -33,6 +34,49 @@ MAX_REQUEST_BYTES = 4096
 app = FastAPI(title="RiskGuard AI API", version="1.0")
 investigator = ApplicationInvestigator()
 repository = InvestigationRepository(Database())
+rate_limiter = LocalRateLimiter()
+
+
+def _protected_operation(request: Request) -> bool:
+    return (request.method == "POST" and request.url.path == "/investigate") or (
+        request.method == "GET" and request.url.path == "/investigations"
+    ) or request.url.path.startswith("/investigations/")
+
+
+def _security_headers(response: JSONResponse) -> JSONResponse:
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
+
+
+async def _buffer_bounded_body(request: Request) -> bool:
+    """Replay a bounded body to FastAPI, including for chunked requests."""
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        message = await request.receive()
+        if message.get("type") != "http.request":
+            break
+        chunk = message.get("body", b"")
+        total += len(chunk)
+        if total > MAX_REQUEST_BYTES:
+            return False
+        chunks.append(chunk)
+        if not message.get("more_body", False):
+            break
+    body = b"".join(chunks)
+    replayed = False
+
+    async def replay() -> dict[str, object]:
+        nonlocal replayed
+        if replayed:
+            return {"type": "http.disconnect"}
+        replayed = True
+        return {"type": "http.request", "body": body, "more_body": False}
+
+    request._receive = replay  # type: ignore[attr-defined]
+    return True
 
 
 @app.middleware("http")
@@ -42,20 +86,35 @@ async def request_size_limit(request: Request, call_next: Any) -> JSONResponse:
     token = set_request_id(request_id)
     log_event("REQUEST_STARTED", endpoint=request.url.path)
     try:
+        if _protected_operation(request):
+            client_host = request.client.host if request.client else "unknown"
+            allowed, retry_after = rate_limiter.check(client_host)
+            if not allowed:
+                response = _security_headers(JSONResponse(status_code=429, content={"detail": "Too many requests."}))
+                response.headers["Retry-After"] = str(retry_after)
+                response.headers["X-Request-ID"] = request_id
+                log_event("RATE_LIMIT_EXCEEDED", endpoint=request.url.path, status="429", duration_ms=duration_ms(started, time.perf_counter()))
+                return response
         content_length = request.headers.get("content-length")
         if content_length:
             try:
                 if int(content_length) > MAX_REQUEST_BYTES:
-                    response = JSONResponse(status_code=413, content={"detail": "Request body is too large."})
+                    response = _security_headers(JSONResponse(status_code=413, content={"detail": "Request body is too large."}))
                     response.headers["X-Request-ID"] = request_id
                     log_event("REQUEST_COMPLETED", endpoint=request.url.path, status="413", duration_ms=duration_ms(started, time.perf_counter()))
                     return response
             except ValueError:
-                response = JSONResponse(status_code=400, content={"detail": "Invalid request body."})
+                response = _security_headers(JSONResponse(status_code=400, content={"detail": "Invalid request body."}))
                 response.headers["X-Request-ID"] = request_id
                 log_event("REQUEST_COMPLETED", endpoint=request.url.path, status="400", duration_ms=duration_ms(started, time.perf_counter()))
                 return response
+        if request.method in {"POST", "PUT", "PATCH"} and not await _buffer_bounded_body(request):
+            response = _security_headers(JSONResponse(status_code=413, content={"detail": "Request body is too large."}))
+            response.headers["X-Request-ID"] = request_id
+            log_event("REQUEST_COMPLETED", endpoint=request.url.path, status="413", duration_ms=duration_ms(started, time.perf_counter()))
+            return response
         response = await call_next(request)
+        _security_headers(response)
         response.headers["X-Request-ID"] = request_id
         log_event("REQUEST_COMPLETED", endpoint=request.url.path, status=str(response.status_code), duration_ms=duration_ms(started, time.perf_counter()))
         return response
@@ -68,12 +127,18 @@ async def request_size_limit(request: Request, call_next: Any) -> JSONResponse:
 
 @app.exception_handler(RequestValidationError)
 async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
-    return JSONResponse(status_code=422, content={"detail": "Invalid request."})
+    response = _security_headers(JSONResponse(status_code=422, content={"detail": "Invalid request."}))
+    if current_request_id():
+        response.headers["X-Request-ID"] = current_request_id()
+    return response
 
 
 @app.exception_handler(Exception)
 async def internal_error_handler(request: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse(status_code=500, content={"detail": "Internal application failure."})
+    response = _security_headers(JSONResponse(status_code=500, content={"detail": "Internal application failure."}))
+    if current_request_id():
+        response.headers["X-Request-ID"] = current_request_id()
+    return response
 
 
 @app.get("/health")
@@ -217,9 +282,12 @@ def get_investigation(investigation_id: int) -> InvestigationResponse:
 
 @app.get("/investigations", response_model=InvestigationListResponse, dependencies=[Depends(require_api_key)])
 def list_investigations(
+    request: Request,
     source_row_id: int | None = Query(default=None, ge=0, le=10_000_000),
     limit: int = Query(default=20, ge=1, le=100),
 ) -> InvestigationListResponse:
+    if any(name not in {"source_row_id", "limit"} for name in request.query_params):
+        raise HTTPException(status_code=422, detail="Invalid query parameters.")
     try:
         records = repository.list_recent(limit=limit, source_row_id=source_row_id)
     except Exception as exc:

@@ -60,8 +60,41 @@ Authentication is only access control and cannot influence ML probabilities,
 behavioral rules, risk scores, risk levels, or AI explanations.
 
 This simple key is not authentication suitable for all production use. Key
-rotation, TLS, rate limiting, stronger identity/authorization, and secure
+rotation, TLS, distributed rate limiting, stronger identity/authorization, and secure
 secret storage remain deployment requirements.
+
+## API hardening
+
+The API accepts a strict, bounded `source_row_id` request only. Pydantic
+strict integers reject booleans, floats, strings, nulls, negative values, and
+out-of-range IDs; unknown fields and unknown investigation-list query names
+are rejected. The 4,096-byte body limit is enforced before application
+processing. Investigation operations are protected by a bounded,
+process-local fixed-window limiter configured with
+`RISKGUARD_RATE_LIMIT_REQUESTS` and `RISKGUARD_RATE_LIMIT_WINDOW_SECONDS`.
+It returns generic `429` responses with `Retry-After`; it does not persist
+state in SQLite and is not a multi-instance production control.
+
+Responses add `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and
+`Referrer-Policy: no-referrer`. CORS remains disabled because the current API
+does not require browser cross-origin access; wildcard CORS is not enabled.
+Request IDs accept only canonical UUIDs and replace malformed, oversized, or
+control-character values. They are never derived from API keys.
+
+Expected validation, authentication, not-found, rate-limit, and dependency
+errors are structured and generic. Unexpected errors return no exception
+message, traceback, SQL, path, environment, prompt, feature-vector, raw
+transaction, or credential data. Existing structured observability records
+safe event metadata and retains request correlation without logging request
+bodies or headers.
+
+The API uses SQLAlchemy ORM queries and bounded typed identifiers/limits; it
+does not concatenate client input into SQL or expose arbitrary query access.
+Readiness remains public and reports only a safe status. Investigation
+responses remain schema-allowlisted and contain no V1-V28 vectors, prompts,
+credentials, or database details. The deterministic risk values remain
+application-owned, while optional AI behavior remains behind the existing
+guardrails and fallback path.
 
 ## Observability and readiness
 
