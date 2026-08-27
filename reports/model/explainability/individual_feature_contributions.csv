@@ -1,0 +1,91 @@
+risk_level,source_row,feature,feature_value,contribution_margin,direction,absolute_contribution,absolute_rank
+LOW,28727,Time,35129.0,-0.19343278,negative: pushes away from fraud class,0.19343278,20
+LOW,28727,V1,-2.01856831334698,0.012441611,positive: pushes toward fraud class,0.012441611,30
+LOW,28727,V2,2.53640411968864,-0.764612,negative: pushes away from fraud class,0.764612,7
+LOW,28727,V3,-0.751934523192251,-0.2727174,negative: pushes away from fraud class,0.2727174,16
+LOW,28727,V4,1.26834883896043,-0.3999121,negative: pushes away from fraud class,0.3999121,13
+LOW,28727,V5,1.18534788004153,-0.03329708,negative: pushes away from fraud class,0.03329708,25
+LOW,28727,V6,-1.30277050384125,-0.55367285,negative: pushes away from fraud class,0.55367285,10
+LOW,28727,V7,1.21637026793104,-0.83526516,negative: pushes away from fraud class,0.83526516,4
+LOW,28727,V8,-0.652734835078191,0.08456028,positive: pushes toward fraud class,0.08456028,23
+LOW,28727,V9,-0.340687979501372,-0.15732577,negative: pushes away from fraud class,0.15732577,21
+LOW,28727,V10,-0.542015287327323,-1.0875438,negative: pushes away from fraud class,1.0875438,3
+LOW,28727,V11,1.32374615103714,0.014157543,positive: pushes toward fraud class,0.014157543,29
+LOW,28727,V12,-0.687489043873191,-0.08910686,negative: pushes away from fraud class,0.08910686,22
+LOW,28727,V13,-0.241364518927818,-0.02885632,negative: pushes away from fraud class,0.02885632,26
+LOW,28727,V14,-3.8134545956691,3.5902324,positive: pushes toward fraud class,3.5902324,1
+LOW,28727,V15,1.57688756803149,-1.0894768,negative: pushes away from fraud class,1.0894768,2
+LOW,28727,V16,0.143659654018098,-0.28285563,negative: pushes away from fraud class,0.28285563,15
+LOW,28727,V17,3.28296614705023,-0.6283944,negative: pushes away from fraud class,0.6283944,9
+LOW,28727,V18,0.942748260685803,-0.25253367,negative: pushes away from fraud class,0.25253367,17
+LOW,28727,V19,-0.416321905394631,-0.6308876,negative: pushes away from fraud class,0.6308876,8
+LOW,28727,V20,-0.242629181371232,-0.026302798,negative: pushes away from fraud class,0.026302798,27
+LOW,28727,V21,0.0935197612353632,-0.21560112,negative: pushes away from fraud class,0.21560112,18
+LOW,28727,V22,-0.0666408372490336,-0.76553214,negative: pushes away from fraud class,0.76553214,6
+LOW,28727,V23,-0.198397449534604,-0.07342474,negative: pushes away from fraud class,0.07342474,24
+LOW,28727,V24,0.0758755833744495,-0.48440972,negative: pushes away from fraud class,0.48440972,11
+LOW,28727,V25,0.0300627994665148,-0.016844919,negative: pushes away from fraud class,0.016844919,28
+LOW,28727,V26,-0.379910783968219,-0.28816488,negative: pushes away from fraud class,0.28816488,14
+LOW,28727,V27,-1.5280468560116,-0.41726655,negative: pushes away from fraud class,0.41726655,12
+LOW,28727,V28,0.404496072031434,-0.7695836,negative: pushes away from fraud class,0.7695836,5
+LOW,28727,Amount,1.0,-0.20417157,negative: pushes away from fraud class,0.20417157,19
+MEDIUM,233005,Time,147404.0,-0.10483058,negative: pushes away from fraud class,0.10483058,22
+MEDIUM,233005,V1,1.89599011982866,-1.1365571,negative: pushes away from fraud class,1.1365571,6
+MEDIUM,233005,V2,0.897415439720054,-0.016925616,negative: pushes away from fraud class,0.016925616,29
+MEDIUM,233005,V3,-3.08470691266968,0.051931284,positive: pushes toward fraud class,0.051931284,28
+MEDIUM,233005,V4,3.03809309055075,1.2293273,positive: pushes toward fraud class,1.2293273,5
+MEDIUM,233005,V5,3.4628498758129,-0.62494713,negative: pushes away from fraud class,0.62494713,8
+MEDIUM,233005,V6,3.71053199600229,-0.8920369,negative: pushes away from fraud class,0.8920369,7
+MEDIUM,233005,V7,-0.187898074104786,-0.16356206,negative: pushes away from fraud class,0.16356206,16
+MEDIUM,233005,V8,0.93890669071182,-2.1776495,negative: pushes away from fraud class,2.1776495,1
+MEDIUM,233005,V9,-1.23652101323344,-0.4373579,negative: pushes away from fraud class,0.4373579,13
+MEDIUM,233005,V10,0.327078225871276,-1.512029,negative: pushes away from fraud class,1.512029,3
+MEDIUM,233005,V11,0.421796986130768,0.05601074,positive: pushes toward fraud class,0.05601074,27
+MEDIUM,233005,V12,-0.663563517439067,-0.14358456,negative: pushes away from fraud class,0.14358456,18
+MEDIUM,233005,V13,-0.385767692925611,-0.08728425,negative: pushes away from fraud class,0.08728425,25
+MEDIUM,233005,V14,-2.29472902605599,1.239342,positive: pushes toward fraud class,1.239342,4
+MEDIUM,233005,V15,-0.180054932642331,-0.0034200337,negative: pushes away from fraud class,0.0034200337,30
+MEDIUM,233005,V16,1.59421229663006,-0.6117246,negative: pushes away from fraud class,0.6117246,10
+MEDIUM,233005,V17,1.33250878861907,-0.61254513,negative: pushes away from fraud class,0.61254513,9
+MEDIUM,233005,V18,0.274439021287792,0.10587849,positive: pushes toward fraud class,0.10587849,21
+MEDIUM,233005,V19,-1.86584881724826,-0.1580947,negative: pushes away from fraud class,0.1580947,17
+MEDIUM,233005,V20,-0.149973182906362,-0.1271777,negative: pushes away from fraud class,0.1271777,19
+MEDIUM,233005,V21,-0.429594361484273,-0.5473761,negative: pushes away from fraud class,0.5473761,11
+MEDIUM,233005,V22,-1.31894495791509,-1.6026161,negative: pushes away from fraud class,1.6026161,2
+MEDIUM,233005,V23,0.355651609310357,-0.19854343,negative: pushes away from fraud class,0.19854343,15
+MEDIUM,233005,V24,0.380662775750824,-0.07153732,negative: pushes away from fraud class,0.07153732,26
+MEDIUM,233005,V25,-0.21913035061951,-0.09984498,negative: pushes away from fraud class,0.09984498,23
+MEDIUM,233005,V26,-0.320113085686647,-0.48104778,negative: pushes away from fraud class,0.48104778,12
+MEDIUM,233005,V27,0.0160647087498748,0.09065865,positive: pushes toward fraud class,0.09065865,24
+MEDIUM,233005,V28,0.010697363895409,0.33218706,positive: pushes toward fraud class,0.33218706,14
+MEDIUM,233005,Amount,2.31,-0.1254948,negative: pushes away from fraud class,0.1254948,20
+HIGH,215984,Time,140308.0,-0.23220737,negative: pushes away from fraud class,0.23220737,20
+HIGH,215984,V1,-4.86174665742506,0.18652132,positive: pushes toward fraud class,0.18652132,23
+HIGH,215984,V2,-2.72266032465254,-0.18321057,negative: pushes away from fraud class,0.18321057,24
+HIGH,215984,V3,-4.6562480902453,0.66061944,positive: pushes toward fraud class,0.66061944,8
+HIGH,215984,V4,2.50200470213773,1.0279166,positive: pushes toward fraud class,1.0279166,4
+HIGH,215984,V5,-2.00834642496284,-0.42494535,negative: pushes away from fraud class,0.42494535,15
+HIGH,215984,V6,0.615421803000716,-0.2981802,negative: pushes away from fraud class,0.2981802,18
+HIGH,215984,V7,-3.4856795852374,0.7535521,positive: pushes toward fraud class,0.7535521,7
+HIGH,215984,V8,1.87885554354264,-0.78196484,negative: pushes away from fraud class,0.78196484,5
+HIGH,215984,V9,-1.11626798693717,-0.25740588,negative: pushes away from fraud class,0.25740588,19
+HIGH,215984,V10,-5.11297108805175,2.2456667,positive: pushes toward fraud class,2.2456667,2
+HIGH,215984,V11,2.9456208658257,0.54813224,positive: pushes toward fraud class,0.54813224,11
+HIGH,215984,V12,-4.10212741074135,2.1013536,positive: pushes toward fraud class,2.1013536,3
+HIGH,215984,V13,-0.477202973371762,-0.20456693,negative: pushes away from fraud class,0.20456693,22
+HIGH,215984,V14,-4.35043446756499,3.488233,positive: pushes toward fraud class,3.488233,1
+HIGH,215984,V15,0.0007163434773255,0.12757689,positive: pushes toward fraud class,0.12757689,26
+HIGH,215984,V16,-5.03744940979325,0.4421261,positive: pushes toward fraud class,0.4421261,13
+HIGH,215984,V17,-8.07801049835537,0.7663424,positive: pushes toward fraud class,0.7663424,6
+HIGH,215984,V18,-3.45798118698593,-0.16701458,negative: pushes away from fraud class,0.16701458,25
+HIGH,215984,V19,0.596696430089622,-0.0013420735,negative: pushes away from fraud class,0.0013420735,30
+HIGH,215984,V20,0.285558785827713,-0.2143131,negative: pushes away from fraud class,0.2143131,21
+HIGH,215984,V21,1.1388759328635,0.412115,positive: pushes toward fraud class,0.412115,16
+HIGH,215984,V22,1.03366434019377,0.12330607,positive: pushes toward fraud class,0.12330607,27
+HIGH,215984,V23,-0.806198897465357,-0.43171754,negative: pushes away from fraud class,0.43171754,14
+HIGH,215984,V24,-1.51104641883913,-0.55683297,negative: pushes away from fraud class,0.55683297,10
+HIGH,215984,V25,-0.191731402147673,-0.11354704,negative: pushes away from fraud class,0.11354704,28
+HIGH,215984,V26,0.0809988303848193,-0.39866877,negative: pushes away from fraud class,0.39866877,17
+HIGH,215984,V27,1.21515161370172,-0.5851385,negative: pushes away from fraud class,0.5851385,9
+HIGH,215984,V28,-0.923141608648516,0.011284957,positive: pushes toward fraud class,0.011284957,29
+HIGH,215984,Amount,592.9,0.5133992,positive: pushes toward fraud class,0.5133992,12

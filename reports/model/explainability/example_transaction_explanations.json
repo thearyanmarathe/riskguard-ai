@@ -1,0 +1,166 @@
+[
+  {
+    "risk_level": "LOW",
+    "source_row": 28727,
+    "Time": 35129.0,
+    "Amount": 1.0,
+    "ml_fraud_probability": 0.01587517000734806,
+    "prediction_recheck_delta": 0.0,
+    "contribution_probability_reconstruction_delta": 9.313225746154785e-09,
+    "bias_margin": 2.7328038215637207,
+    "top_positive_contributors": [
+      {
+        "feature": "V14",
+        "contribution_margin": 3.5902323722839355
+      },
+      {
+        "feature": "V8",
+        "contribution_margin": 0.08456028252840042
+      },
+      {
+        "feature": "V11",
+        "contribution_margin": 0.014157542958855629
+      },
+      {
+        "feature": "V1",
+        "contribution_margin": 0.012441610917448997
+      }
+    ],
+    "top_negative_contributors": [
+      {
+        "feature": "V15",
+        "contribution_margin": -1.0894768238067627
+      },
+      {
+        "feature": "V10",
+        "contribution_margin": -1.0875438451766968
+      },
+      {
+        "feature": "V7",
+        "contribution_margin": -0.8352651596069336
+      },
+      {
+        "feature": "V28",
+        "contribution_margin": -0.7695835828781128
+      },
+      {
+        "feature": "V22",
+        "contribution_margin": -0.7655321359634399
+      }
+    ],
+    "existing_risk_score": 20.95,
+    "existing_risk_level": "LOW"
+  },
+  {
+    "risk_level": "MEDIUM",
+    "source_row": 233005,
+    "Time": 147404.0,
+    "Amount": 2.31,
+    "ml_fraud_probability": 0.0022422149777412415,
+    "prediction_recheck_delta": 0.0,
+    "contribution_probability_reconstruction_delta": 5.122274160385132e-09,
+    "bias_margin": 2.7328038215637207,
+    "top_positive_contributors": [
+      {
+        "feature": "V14",
+        "contribution_margin": 1.2393419742584229
+      },
+      {
+        "feature": "V4",
+        "contribution_margin": 1.2293273210525513
+      },
+      {
+        "feature": "V28",
+        "contribution_margin": 0.33218705654144287
+      },
+      {
+        "feature": "V18",
+        "contribution_margin": 0.10587848722934723
+      },
+      {
+        "feature": "V27",
+        "contribution_margin": 0.09065864980220795
+      }
+    ],
+    "top_negative_contributors": [
+      {
+        "feature": "V8",
+        "contribution_margin": -2.17764949798584
+      },
+      {
+        "feature": "V22",
+        "contribution_margin": -1.6026160717010498
+      },
+      {
+        "feature": "V10",
+        "contribution_margin": -1.5120290517807007
+      },
+      {
+        "feature": "V1",
+        "contribution_margin": -1.1365571022033691
+      },
+      {
+        "feature": "V6",
+        "contribution_margin": -0.8920369148254395
+      }
+    ],
+    "existing_risk_score": 40.13,
+    "existing_risk_level": "MEDIUM"
+  },
+  {
+    "risk_level": "HIGH",
+    "source_row": 215984,
+    "Time": 140308.0,
+    "Amount": 592.9,
+    "ml_fraud_probability": 0.9999874830245972,
+    "prediction_recheck_delta": 0.0,
+    "contribution_probability_reconstruction_delta": 0.0,
+    "bias_margin": 2.7328038215637207,
+    "top_positive_contributors": [
+      {
+        "feature": "V14",
+        "contribution_margin": 3.4882330894470215
+      },
+      {
+        "feature": "V10",
+        "contribution_margin": 2.245666742324829
+      },
+      {
+        "feature": "V12",
+        "contribution_margin": 2.101353645324707
+      },
+      {
+        "feature": "V4",
+        "contribution_margin": 1.0279165506362915
+      },
+      {
+        "feature": "V17",
+        "contribution_margin": 0.7663424015045166
+      }
+    ],
+    "top_negative_contributors": [
+      {
+        "feature": "V8",
+        "contribution_margin": -0.7819648385047913
+      },
+      {
+        "feature": "V27",
+        "contribution_margin": -0.5851384997367859
+      },
+      {
+        "feature": "V24",
+        "contribution_margin": -0.5568329691886902
+      },
+      {
+        "feature": "V23",
+        "contribution_margin": -0.43171754479408264
+      },
+      {
+        "feature": "V5",
+        "contribution_margin": -0.4249453544616699
+      }
+    ],
+    "existing_risk_score": 75.0,
+    "existing_risk_level": "HIGH"
+  }
+]
