@@ -1,0 +1,12 @@
+layer,metric,value,source
+ML,precision,0.9146341463414634,reports/model/metrics.json
+ML,recall,0.7894736842105263,reports/model/metrics.json
+ML,f1,0.847457627118644,reports/model/metrics.json
+ML,average_precision,0.8219248088484978,reports/model/metrics.json
+Behavioral,assessments,5000.0,saved assessments CSV
+Risk,LOW,4704.0,saved assessments CSV
+Risk,MEDIUM,263.0,saved assessments CSV
+Risk,HIGH,33.0,saved assessments CSV
+Security,focused_tests,11.0,test inventory
+E2E,passed,9.0,e2e_results.json
+Tests,discovered,86.0,AST test inventory
