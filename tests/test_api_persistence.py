@@ -49,6 +49,8 @@ class ApiPersistenceTests(unittest.TestCase):
         self.assertIsInstance(persistence_id, int)
         self.assertTrue(body["fallback_used"])
         self.assertEqual((body["risk_score"], body["risk_level"], body["ml_fraud_probability"], body["behavioral_points"]), (95.0, "HIGH", 0.9999875, 35.0))
+        event_types = {event["event_type"] for event in api_main.repository.list_events(persistence_id)}
+        self.assertEqual(event_types, {"INVESTIGATION_CREATED", "INVESTIGATION_COMPLETED"})
 
         retrieved = self.client.get(f"/investigations/{persistence_id}")
         self.assertEqual(retrieved.status_code, 200)

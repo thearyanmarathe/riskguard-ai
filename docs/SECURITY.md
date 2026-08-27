@@ -38,6 +38,15 @@ raw SQL injection. The local database has no authentication or retention
 policy; production use requires access controls, retention, and encryption or
 backup review.
 
+Phase 18 adds database-level range checks for new SQLite tables and matching
+repository validation for legacy tables. SQLite writes use SQLAlchemy ORM
+operations, foreign keys, and transaction rollback; API query values are
+bounded and never concatenated into SQL. Investigation and audit records are
+append-only through the current API, with no update or delete routes. The
+database stores no prompts, credentials, raw CSV rows, or V1–V28 vectors.
+Automatic retention and production database access controls remain future
+work.
+
 ## API authentication
 
 Investigation endpoints require `RISKGUARD_API_KEY` in the `X-API-Key`

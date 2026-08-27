@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, Session
 
 
@@ -26,7 +26,16 @@ class Database:
             url = f"sqlite:///{self.path.resolve().as_posix()}"
         else:
             url = "sqlite:///:memory:"
-        self.engine = create_engine(url, connect_args={"check_same_thread": False})
+        self.engine = create_engine(url, connect_args={"check_same_thread": False, "timeout": 5})
+        event.listen(self.engine, "connect", self._configure_connection)
+
+    @staticmethod
+    def _configure_connection(dbapi_connection, connection_record) -> None:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("PRAGMA busy_timeout=5000")
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.close()
 
     def initialize(self) -> None:
         from investigation_repository import InvestigationModel
