@@ -1,0 +1,47 @@
+[
+  {
+    "check": "Saved assessment integrity",
+    "status": "PASS",
+    "details": "saved LOW/MEDIUM/HIGH assessments contain required fields"
+  },
+  {
+    "check": "Risk invariants",
+    "status": "PASS",
+    "details": "formula and LOW/MEDIUM/HIGH ranges preserved; saved scores allow 0.01 for two-decimal persistence rounding"
+  },
+  {
+    "check": "Deterministic Investigator and fallback",
+    "status": "PASS",
+    "details": "deterministic Investigator succeeds for all representative rows"
+  },
+  {
+    "check": "Mock AI provider boundary",
+    "status": "PASS",
+    "details": "valid output accepted; invalid, tampered, and disallowed-action outputs fell back"
+  },
+  {
+    "check": "FastAPI end-to-end",
+    "status": "PASS",
+    "details": "health, representative rows, validation errors, 404, fallback, and response allowlist passed"
+  },
+  {
+    "check": "Streamlit display path",
+    "status": "PASS",
+    "details": "dashboard module imports and saved LOW/MEDIUM/HIGH display path is valid"
+  },
+  {
+    "check": "Model integrity and explainability",
+    "status": "PASS",
+    "details": "artifact loaded; 30-feature contract, saved probabilities, and explainability outputs valid"
+  },
+  {
+    "check": "Deterministic reproducibility",
+    "status": "PASS",
+    "details": "two deterministic runs produced equivalent reports"
+  },
+  {
+    "check": "Raw CSV hash integrity",
+    "status": "PASS",
+    "details": "SHA-256 unchanged: 76274b691b16a6c49d3f159c883398e03ccd6d1ee12d9d8ee38f4b4b98551a89"
+  }
+]
