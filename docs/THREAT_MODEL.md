@@ -1,6 +1,8 @@
-# RiskGuard AI Threat Model — Phase 10
+# RiskGuard AI Threat Model
 
-RiskGuard AI is a prototype fraud-analysis application. The deterministic risk engine remains authoritative; the AI investigator is an explanation and bounded-recommendation layer.
+**IMPLEMENTED:** RiskGuard AI is a prototype fraud-analysis application. The deterministic risk engine remains authoritative; the AI Investigator is an explanation and bounded-recommendation layer.
+
+Related documentation: [architecture](ARCHITECTURE.md), [AI agent boundary](AI_AGENT.md), [security](SECURITY.md), and [AI provider](AI_PROVIDER.md).
 
 ## Assets
 

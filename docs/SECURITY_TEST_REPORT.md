@@ -1,5 +1,7 @@
 # RiskGuard AI Security Test Report
 
+**IMPLEMENTED EVIDENCE:** This report summarizes repository-level tests and their limitations. It is not a penetration test or a production-readiness certification.
+
 ## Scope
 
 Phase 21 assessed the current API, authentication, rate limiter, AI guardrail
@@ -140,3 +142,6 @@ Existing controls mitigated the tested injection, tampering, leakage,
 authentication, input-validation, resource, database, audit, and dashboard
 cases. The residual findings are deployment and prototype-architecture
 limitations, not changes to the authoritative fraud/risk behavior.
+
+Related documentation: [architecture](ARCHITECTURE.md), [security](SECURITY.md),
+[threat model](THREAT_MODEL.md), [API](API.md), and [system evaluation](../reports/evaluation/system_evaluation.md).

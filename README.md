@@ -1,141 +1,194 @@
 # RiskGuard AI
 
-RiskGuard AI is a student project demonstrating a reproducible credit-card fraud investigation workflow. It combines a baseline XGBoost fraud probability from the Kaggle credit-card dataset with transparent behavioral rules and a deterministic, evidence-only investigation summary.
+RiskGuard AI is a reproducible fraud-risk investigation prototype. It demonstrates how a fraud prediction can be combined with transparent behavioral evidence and a deterministic investigation workflow.
 
-It is a demonstration project, not a production fraud system or a production-validated financial risk score.
+## What It Does
 
-## Problem statement
+Fraud detection alone does not provide enough context for investigation. RiskGuard AI combines:
 
-Credit-card fraud datasets are highly imbalanced: the positive class is rare, so accuracy alone can be misleading. This project demonstrates data quality checks, imbalance-aware baseline modelling, explicit rule signals, and an auditable investigation experience.
+- ML fraud prediction from the Kaggle credit-card dataset
+- deterministic behavioral risk signals using synthetic demo metadata
+- transparent risk scoring and risk levels
+- evidence-based investigation and explainability
+- an optional, guarded AI-assisted investigation path
+- a FastAPI interface
+- SQLite persistence and append-only audit events
+- authentication, validation, rate limiting, safe errors, logging, request IDs, and readiness checks
+
+The responsibilities are intentionally separate:
+
+- **ML predicts** a fraud probability.
+- **The risk engine decides** the deterministic score and risk level.
+- **The Investigator explains** the stored evidence and provides a conservative recommendation.
+- **AI is advisory** and may be unavailable; deterministic fallback remains available.
+- **Human and organizational policy remain responsible** for operational action.
+
+This is an implemented local demonstration, not a production fraud system or a production-validated financial risk score.
 
 ## Architecture
 
 ```text
-Raw Kaggle CSV (read only)
-        |
-        +-- EDA report and figures
-        |
-        +-- Deduplicated in-memory train/test split --> XGBoost baseline --> saved model artifact
-                                                        |
-Real Kaggle transaction subset ------------------------+--> ML fraud probability
-        |
-Synthetic demo context --> behavioral rules -----------> transparent risk score
-                                                        |
-                                             deterministic investigator
-                                                        |
-                                              Streamlit dashboard
+Real Kaggle transaction
+          |
+          v
+  XGBoost baseline model ------> ML fraud probability
+          |                                  |
+          +---- synthetic demo context ------+
+                         |
+                         v
+              Behavioral signals and points
+                         |
+                         v
+              Deterministic risk engine
+                  |                 |
+                  v                 v
+             Risk decision     Rule evidence
+                  \                 /
+                   v               v
+                    Deterministic Investigator
+                              |
+                    +---------+---------+
+                    |                   |
+                    v                   v
+              AI guardrails       Deterministic
+              + optional AI          fallback
+                    \                   /
+                     v                 v
+                         FastAPI
+                           |
+                 +---------+---------+
+                 |                   |
+                 v                   v
+        SQLite investigations   Streamlit console
+        + audit events          (read-only presentation)
 ```
 
-The Streamlit application is a UI layer. It reads saved Phase 3 assessments and reuses the deterministic investigator; it does not retrain models, regenerate metadata, or recalculate the risk formula.
+The API and dashboard reuse saved assessments and the existing application modules. The dashboard does not retrain the model, call the provider directly, write SQLite, or recalculate the risk formula.
 
-## Dataset and provenance
+## Data and model
 
-Place the Kaggle `creditcard.csv` file at `data/raw/creditcard.csv`.
+Place the Kaggle file at `data/raw/creditcard.csv`. The real fields are `Time`, `V1`-`V28`, `Amount`, and `Class`; the `V` fields are anonymized/transformed features. The raw CSV is read-only for this application and is excluded from Git.
 
-Real Kaggle fields are `Time`, `V1`–`V28`, `Amount`, and `Class`. The `V` fields are anonymized/transformed dataset features. The raw CSV is read only and is excluded from Git.
+`user_id`, `device_id`, `region`, `transaction_velocity`, `historical_average_amount`, and `amount_deviation` are deterministic **synthetic demo behavioral metadata**. They are not Kaggle fields, real behavioral history, or inputs to XGBoost.
 
-`user_id`, `device_id`, `region`, and `transaction_velocity` are **synthetic demo metadata** created deterministically for the Phase 3 illustration. They do not come from Kaggle, are not inputs to XGBoost, and are not claimed to improve the ML model.
-
-## ML approach
-
-Phase 2 removes exact duplicate records only from an in-memory derived dataframe before the split, preventing identical records from crossing train/test boundaries. The train/test split is stratified by `Class` with a fixed seed. Logistic Regression uses `class_weight="balanced"`; the XGBoost baseline uses the same fixed, simple configuration throughout the project. Extensive hyperparameter tuning was intentionally not performed.
-
-On the held-out test set, the XGBoost baseline achieved:
+The saved XGBoost baseline uses a fixed, stratified 80/20 split after in-memory exact-duplicate removal. Verified held-out metrics are:
 
 | Metric | Result |
 | --- | ---: |
 | Precision | 0.914634 |
 | Recall | 0.789474 |
-| F1-score | 0.847458 |
-| PR-AUC / Average Precision | 0.821925 |
+| F1 | 0.847458 |
+| Average Precision / PR-AUC | 0.821925 |
 
-Accuracy is not the primary metric because a classifier predicting every transaction as legitimate would appear highly accurate while detecting no fraud.
+The model artifact and supporting evidence are in `reports/model/`. These metrics are a baseline evaluation, not a production performance guarantee.
 
-The evaluated XGBoost artifact is saved as `reports/model/xgboost_baseline.json`. Its per-transaction probabilities are calculated from real Kaggle transaction features only: `Time`, `V1`–`V28`, and `Amount`.
+## Risk and investigation behavior
 
-## Behavioral rule engine
-
-Phase 3 selects a reproducible 5,000-row subset and applies transparent rules to synthetic demo context plus the real `Amount` field:
-
-| Rule | Points |
-| --- | ---: |
-| High transaction velocity | 20 |
-| Unusual synthetic device | 20 |
-| Unusual synthetic region | 15 |
-| High amount | 20 |
-
-The deterministic formula is:
+The implemented deterministic score is:
 
 ```text
-min(100, 60 × ml_fraud_probability + behavioral rule points)
+min(100, 60 * ml_fraud_probability + behavioral rule points)
 ```
 
-It produces LOW, MEDIUM, and HIGH levels. This formula is intentionally transparent for demonstration and is not a production-validated financial risk score.
+The current risk levels are LOW, MEDIUM, and HIGH. The score is intentionally transparent and is not a calibrated fraud probability.
 
-## AI Investigator
+The deterministic Investigator uses only supplied assessment fields and stored rule explanations. It does not infer customer history, motives, account compromise, real locations, or proof of fraud. If the optional provider is not configured or fails validation, the application uses the deterministic fallback. No recommendation is executed automatically.
 
-The Phase 4 investigator receives one saved assessment record and produces a structured, human-readable summary, rule evidence, conservative recommendation, and evidence boundary. It is deterministic, requires no API key or external service, and uses only supplied assessment fields and stored rule explanations. It does not infer customer history, motives, account compromise, real locations, or proof of fraud.
+## Interfaces and persistence
 
-## Dashboard
+- **FastAPI:** `POST /investigate`, `GET /investigations`, and `GET /investigations/{id}` are protected by `X-API-Key`; `/health` and `/ready` are public.
+- **SQLite:** completed investigations and safe audit metadata are stored in `data/riskguard.db`. Raw CSV rows, feature vectors, prompts, and credentials are not stored.
+- **Streamlit:** the local investigation console presents saved assessments, risk evidence, investigation output, and audit metadata without changing the underlying decision.
 
-The Phase 5A Streamlit dashboard displays a selected saved transaction's risk summary, real transaction details, clearly labelled synthetic demo context, triggered rules, signal contributions, and the reused deterministic investigator output.
+## Demo
 
-## Project structure
+Run the three deterministic LOW, MEDIUM, and HIGH scenarios:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_demo.py
+```
+
+The demo uses selected real dataset rows with synthetic behavioral context and deterministic fallback. See [docs/DEMO.md](docs/DEMO.md).
+
+See the detailed documentation:
+
+- [Architecture, demo story, readiness matrix, and Phase 1-23 history](docs/ARCHITECTURE.md)
+- [Model](docs/MODEL.md)
+- [Risk engine](docs/RISK_ENGINE.md)
+- [AI Investigator/agent boundary](docs/AI_AGENT.md)
+- [API](docs/API.md)
+- [Security](docs/SECURITY.md) and [threat model](docs/THREAT_MODEL.md)
+- [Database](docs/DATABASE.md)
+- [Observability](docs/OBSERVABILITY.md)
+- [Dashboard](docs/DASHBOARD.md)
+- [Optional AI provider](docs/AI_PROVIDER.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Security test report](docs/SECURITY_TEST_REPORT.md)
+
+## Repository map
 
 ```text
-data/raw/                         # local Kaggle CSV; ignored by Git
-scripts/eda.py                    # Phase 1 EDA
-scripts/train_baselines.py        # Phase 2 baseline training and artifact save
-scripts/behavioral_context.py     # Phase 3 reusable synthetic/risk logic
-scripts/run_behavioral_demo.py    # Phase 3 output generation
-scripts/investigator.py           # Phase 4 deterministic investigator
-scripts/run_investigator.py       # Phase 4 report generation
-scripts/app.py                    # Phase 5A Streamlit UI
-reports/eda/                      # EDA outputs
-reports/model/                    # baseline metrics, plots, model artifact
-reports/behavioral/               # saved behavioral assessments
-reports/investigator/             # sample investigation reports
+api/                    FastAPI routes, schemas, authentication, rate limiting
+scripts/                EDA, model, behavioral, investigator, API support, and UI code
+tests/                  Unit, integration, security, persistence, and Streamlit AppTest coverage
+reports/model/          Saved baseline metrics, plots, and explainability artifacts
+reports/behavioral/     Saved synthetic-context assessments and analyses
+reports/risk/           Risk-engine validation artifacts
+reports/investigator/   Representative investigation outputs
+reports/evaluation/     System evaluation and machine-readable metrics
+data/raw/               Local Kaggle CSV; ignored by Git
 ```
 
 ## Setup
 
-Create or activate the project virtual environment, install the existing dependencies, and ensure `data/raw/creditcard.csv` is present. Streamlit is required for the dashboard.
+Run commands from `riskguard-ai` with the existing virtual environment and dependencies:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-## Run commands
+Ensure `data/raw/creditcard.csv` is present before running data or assessment generation commands.
 
-Run each command from the project root (`riskguard-ai`).
+## Run locally
 
 ```powershell
-# Phase 1: EDA
+# Generate or refresh the existing analytical artifacts, when needed
 .\.venv\Scripts\python.exe .\scripts\eda.py
-
-# Phase 2: reproduce baseline training and save the XGBoost artifact
 .\.venv\Scripts\python.exe .\scripts\train_baselines.py
-
-# Phase 3: generate deterministic behavioral assessments
 .\.venv\Scripts\python.exe .\scripts\run_behavioral_demo.py
-
-# Phase 4: generate representative investigation reports
 .\.venv\Scripts\python.exe .\scripts\run_investigator.py
 
-# Phase 5A: start the dashboard
+# Start the Streamlit investigation console
 .\.venv\Scripts\python.exe -m streamlit run .\scripts\app.py
+
+# Start the API in another terminal
+$env:RISKGUARD_API_KEY = "local-development-key"
+.\.venv\Scripts\python.exe -m uvicorn api.main:app --host 127.0.0.1 --port 8000
 ```
 
-To investigate one existing Phase 3 source row:
+Initialize the local SQLite database, if necessary:
 
 ```powershell
-.\.venv\Scripts\python.exe .\scripts\run_investigator.py --source-row-id 215984
+.\.venv\Scripts\python.exe .\scripts\init_db.py
 ```
 
-## Limitations and disclaimer
+The optional provider uses `AI_PROVIDER_API_KEY`, `AI_MODEL`, and `AI_TIMEOUT_SECONDS`. Without a provider key, deterministic fallback is the expected path. Never commit `.env` or real credentials.
 
-- The data contains anonymized features, limiting business interpretation.
-- Fraud is extremely rare, so results should be interpreted with class imbalance in mind.
-- Synthetic behavioral fields are demo-only and do not represent real users, devices, regions, or velocity history.
-- The risk score and recommendations are transparent project demonstrations, not financial advice or a production fraud decision.
-- A high probability or risk level is an investigation signal; it does not prove fraud.
+## Verification
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m compileall -q scripts tests
+```
+
+The checked-in system-evaluation artifact records 86 passed tests and 9 passed end-to-end checks. The current Phase 24 verification run passed 99 tests and 9 end-to-end checks. No live AI-provider evaluation was performed; Streamlit AppTest was used, and browser-level testing was not performed.
+
+## Limitations and future work
+
+**IMPLEMENTED:** reproducible baseline modelling, transparent synthetic behavioral rules, deterministic risk ownership, guarded optional AI with fallback, local API access, SQLite persistence/auditability, and documented security controls.
+
+**LIMITATION:** the dataset is historical and imbalanced; features are anonymized; behavioral context is synthetic; there is no real payment integration or production behavioral history; SQLite and rate limiting are local/process-scoped; authentication is a single shared API key; and the score is not calibrated.
+
+**PLANNED / FUTURE:** live provider-quality evaluation, calibration and drift studies, production load/concurrency testing, stronger identity and authorization, distributed rate limiting, TLS/gateway validation, and production database/retention operations.
+
+Do not interpret a high probability, risk score, or risk level as proof of fraud or as an automatic financial decision.

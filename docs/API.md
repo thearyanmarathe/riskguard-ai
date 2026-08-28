@@ -1,5 +1,7 @@
 # RiskGuard AI API
 
+**IMPLEMENTED:** Thin local FastAPI access over saved assessments and the existing Investigator. It is not a production service.
+
 This is a thin FastAPI service over the existing saved behavioral assessments
 and Phase 12 application Investigator. FastAPI does not own prediction,
 behavioral rules, scoring, thresholds, or AI guardrails.
@@ -150,3 +152,6 @@ ordering (`created_at DESC`, then `id DESC`).
 Only `POST /investigate`, `GET /investigations`, and
 `GET /investigations/{id}` are supported investigation operations. PUT, PATCH,
 and DELETE are not implemented and return `405`; they cannot mutate data.
+
+Related documentation: [architecture](ARCHITECTURE.md), [model](MODEL.md),
+[risk engine](RISK_ENGINE.md), [database](DATABASE.md), and [security](SECURITY.md).

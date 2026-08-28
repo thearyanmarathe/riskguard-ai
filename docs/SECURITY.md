@@ -1,6 +1,6 @@
-# RiskGuard AI Security — Phase 10
+# RiskGuard AI Security
 
-RiskGuard AI is a prototype and not a production financial security system. Phase 10 adds a security boundary for any future AI investigator integration while preserving the deterministic investigator and risk engine.
+**IMPLEMENTED:** RiskGuard AI is a prototype with local security controls; it is not a production financial security system. The deterministic Investigator and risk engine remain authoritative.
 
 ## Trust and data flow
 
@@ -22,7 +22,7 @@ The deterministic risk score, ML probability, behavioral points, and risk level 
 
 ## Secrets and logging
 
-`.env` is ignored by Git and `.env.example` contains a placeholder only. This repository has no active provider/API-key integration. Credentials must come from environment variables if a provider is added; they must never be placed in prompts, responses, dashboard output, or logs. Guardrail logging emits event names such as `ai_validation_failed` and `ai_fallback_used`, not raw transaction data or secrets.
+`.env` is ignored by Git and `.env.example` contains a placeholder only. The optional provider and API-key integrations use environment variables; credentials must never be placed in prompts, responses, dashboard output, or logs. Guardrail logging emits event names such as `ai_validation_failed` and `ai_fallback_used`, not raw transaction data or secrets.
 
 ## Tools and limitations
 
@@ -129,3 +129,6 @@ It does not display V1–V28 vectors, prompts, credentials, raw CSV contents,
 filesystem paths, SQL, or provider secrets. Audit history is read-only and
 limited to persisted safe metadata. Missing records, unavailable databases,
 and missing optional context produce user-facing states without tracebacks.
+
+Related documentation: [architecture](ARCHITECTURE.md), [AI agent boundary](AI_AGENT.md),
+[threat model](THREAT_MODEL.md), [API](API.md), and [security test report](SECURITY_TEST_REPORT.md).

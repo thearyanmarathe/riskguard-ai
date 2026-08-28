@@ -1,6 +1,6 @@
-# AI Provider Configuration — Phase 11
+# RiskGuard AI Optional Provider
 
-RiskGuard AI uses one optional provider adapter: the OpenAI Responses API. The adapter is not required for the application or tests. If no key is configured, `ApplicationInvestigator` returns the existing deterministic Investigator report.
+**IMPLEMENTED:** RiskGuard AI has one optional provider adapter: the OpenAI Responses API. The adapter is not required for the application or tests. If no key is configured, `ApplicationInvestigator` returns the existing deterministic Investigator report.
 
 ## Configuration
 
@@ -32,3 +32,8 @@ Missing key, timeout, HTTP failure, oversized/malformed provider response, inval
 ```
 
 Tests use mocked provider responses and make no paid external API calls.
+
+**LIMITATION:** These tests use MOCKED DATA/provider responses, not live AI evaluation. AI output is advisory and cannot override authoritative risk values.
+
+Related documentation: [architecture](ARCHITECTURE.md), [AI agent boundary](AI_AGENT.md),
+[security](SECURITY.md), and [threat model](THREAT_MODEL.md).

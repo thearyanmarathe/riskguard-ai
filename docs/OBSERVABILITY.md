@@ -1,6 +1,6 @@
 # RiskGuard AI Observability and Reliability
 
-Phase 17 adds passive observability around the existing local application. It
+**IMPLEMENTED:** Passive observability surrounds the existing local application. It
 does not calculate risk, change authentication, alter AI guardrails, or change
 persistence semantics.
 
@@ -69,3 +69,6 @@ centralized monitoring. Production still needs log access controls, rotation,
 redaction review, alerting, TLS, API-key rotation, rate limiting, and
 operational monitoring. No external logging, metrics, tracing, or cloud
 service was added.
+
+Related documentation: [architecture](ARCHITECTURE.md), [API](API.md),
+[security](SECURITY.md), and [deployment](DEPLOYMENT.md).

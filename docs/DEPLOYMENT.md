@@ -1,5 +1,7 @@
 # RiskGuard AI Deployment Guide
 
+**IMPLEMENTED:** This guide documents controlled local deployment paths. It is not evidence that the application is production-ready or that Docker runtime testing has passed.
+
 ## Architecture
 
 The deployment contains a thin FastAPI service and the existing read-only Streamlit investigation console. The API loads the saved assessment CSV and existing XGBoost artifact, applies the existing Investigator path, and persists investigation records in SQLite. The dashboard reads the existing saved assessments and local SQLite records; it does not replace the API's authentication or decision logic.
@@ -127,3 +129,6 @@ Use HTTPS, secret rotation, least-privilege runtime identity, image scanning/sig
 ## Known Limitations
 
 This is a demonstration deployment, not a production-validated fraud system. The model is a baseline, behavioral metadata is synthetic, the score is not a calibrated fraud probability, SQLite and the rate limiter are local/process-scoped, and authentication is a single API key. The saved model and assessment artifacts must be provenance-controlled. Provider quality, throughput, concurrency, disaster recovery, and multi-replica behavior require separate validation. Docker smoke testing depends on a functioning local Docker daemon.
+
+Related documentation: [architecture](ARCHITECTURE.md), [API](API.md),
+[security](SECURITY.md), [observability](OBSERVABILITY.md), and [database](DATABASE.md).

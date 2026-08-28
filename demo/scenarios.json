@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "scenarios": [
+    {
+      "id": "low_risk",
+      "name": "Normal transaction / low risk",
+      "source_row_id": 28727,
+      "expected_risk_level": "LOW",
+      "expected_risk_score": 20.95,
+      "expected_ml_probability": 0.01587517,
+      "expected_behavioral_points": 20,
+      "expected_triggered_rules": ["unusual_device"],
+      "explanation": "A low ML signal with one synthetic device anomaly remains below the medium-risk boundary.",
+      "provenance": "REAL_TRANSACTION_WITH_SYNTHETIC_BEHAVIORAL_CONTEXT"
+    },
+    {
+      "id": "medium_risk",
+      "name": "Behavioral anomaly / medium risk",
+      "source_row_id": 233005,
+      "expected_risk_level": "MEDIUM",
+      "expected_risk_score": 40.13,
+      "expected_ml_probability": 0.002242215,
+      "expected_behavioral_points": 40,
+      "expected_triggered_rules": ["high_transaction_velocity", "unusual_device"],
+      "explanation": "Two synthetic behavioral signals produce a medium deterministic risk assessment.",
+      "provenance": "REAL_TRANSACTION_WITH_SYNTHETIC_BEHAVIORAL_CONTEXT"
+    },
+    {
+      "id": "high_risk",
+      "name": "Multiple suspicious signals / high risk",
+      "source_row_id": 215984,
+      "expected_risk_level": "HIGH",
+      "expected_risk_score": 95.0,
+      "expected_ml_probability": 0.9999875,
+      "expected_behavioral_points": 35,
+      "expected_triggered_rules": ["unusual_region", "high_amount_deviation"],
+      "explanation": "A very high saved ML signal combines with two synthetic behavioral signals.",
+      "provenance": "REAL_TRANSACTION_WITH_SYNTHETIC_BEHAVIORAL_CONTEXT"
+    }
+  ]
+}

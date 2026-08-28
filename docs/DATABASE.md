@@ -1,6 +1,6 @@
 # RiskGuard AI SQLite Persistence
 
-Phase 15 adds a local SQLite store for completed, validated investigation
+**IMPLEMENTED:** The local SQLite store holds completed, validated investigation
 results. The database is storage only: prediction, risk scoring, behavioral
 rules, and AI guardrails remain in the existing application modules.
 
@@ -81,3 +81,37 @@ not place production secrets or raw transaction data in this database.
 Tests use temporary SQLite files and verify initialization, reopening,
 repository operations, API persistence, fallback behavior, and raw CSV hash
 stability. No existing developer database is required.
+
+## Safe backup and test isolation
+
+`data/riskguard.db` is a development artifact. No pre-Phase-25 byte-for-byte
+backup was found in the repository/runtime locations. Create a new verified
+backup at an explicit, currently nonexistent absolute path with:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\backup_database.py C:\backups\riskguard.db
+```
+
+The utility uses SQLite's backup API, refuses to overwrite an existing file,
+checks required tables and integrity, and reports logical counts and hashes.
+Restoration is a deliberate operation requiring both an explicit backup and
+`--confirm`; it validates the expected 287 investigations and 402 audit events
+before replacing the target:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\restore_test_database.py --backup C:\backups\riskguard.db --confirm
+```
+
+The full test suite uses a temporary SQLite database installed by
+`tests/__init__.py`; tests do not need to write the live development database.
+The demo runner is read-only and does not create investigation records.
+
+**LIMITATION:** The current logical database state is 287 investigations and
+402 audit events with SQLite integrity `ok`, but the original pre-Phase-25
+database bytes cannot be proven from the available files.
+
+Related documentation: [architecture](ARCHITECTURE.md), [demo](DEMO.md),
+[API](API.md), [security](SECURITY.md), and [deployment](DEPLOYMENT.md).
+
+Related documentation: [architecture](ARCHITECTURE.md), [API](API.md),
+[security](SECURITY.md), and [deployment](DEPLOYMENT.md).

@@ -1,6 +1,6 @@
 # RiskGuard AI Investigation Console
 
-The Streamlit console is a read-only presentation layer over the existing
+**IMPLEMENTED:** The Streamlit console is a read-only presentation layer over the existing
 investigation repository and saved Phase 3 assessment output. It uses a
 read-only aggregate for exact totals plus bounded deterministic repository
 reads for displayed rows, and never writes SQLite, calls OpenAI directly,
@@ -28,3 +28,8 @@ The deterministic risk engine owns risk score and risk level. AI output is
 advisory and fallback status is visible without exposing credentials. Audit
 history is limited to safe persisted event metadata. Prompts, keys, raw data,
 paths, SQL, and provider responses are not displayed.
+
+**LIMITATION:** Streamlit AppTest is covered by the saved evaluation; browser-level testing is not claimed. The console is local and is not a production access-control boundary.
+
+Related documentation: [architecture](ARCHITECTURE.md), [AI agent boundary](AI_AGENT.md),
+[database](DATABASE.md), and [deployment](DEPLOYMENT.md).
