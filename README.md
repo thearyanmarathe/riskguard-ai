@@ -110,6 +110,14 @@ Run the three deterministic LOW, MEDIUM, and HIGH scenarios:
 
 The demo uses selected real dataset rows with synthetic behavioral context and deterministic fallback. See [docs/DEMO.md](docs/DEMO.md).
 
+## Pitch & Submission
+
+- [Pitch](docs/PITCH.md)
+- [Submission summary](docs/SUBMISSION.md)
+- [60-second elevator pitch](docs/ELEVATOR_PITCH.md)
+- [Technical talking points](docs/PITCH_TALKING_POINTS.md)
+- [Submission checklist](docs/SUBMISSION_CHECKLIST.md)
+
 ## 5-Minute Demo
 
 Primary command:
