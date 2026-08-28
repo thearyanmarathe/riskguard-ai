@@ -214,7 +214,7 @@ soupsieve==2.9.2
 
 stack-data==0.6.3
 
-starlette==1.6.0
+starlette==0.47.3
 
 streamlit==1.62.0
 

@@ -12,11 +12,15 @@ Run locally from the project root:
 .\.venv\Scripts\python.exe -m streamlit run .\scripts\app.py
 ```
 
-The console provides persisted overview metrics, LOW/MEDIUM/HIGH distribution,
-bounded recent investigations, source-row lookup, detail tabs, stored ML
+The console is a two-workspace Streamlit layout with a dark risk-ops theme.
+The sidebar switches between **Overview** and **Investigation** and shows compact
+system status. Overview shows persisted KPI metrics, a colored LOW/MEDIUM/HIGH
+distribution, and a selectable recent-investigations table. Selecting a row
+opens Investigation, which keeps source-row lookup, a risk badge, a display-only
+0–100 score bar, and the existing detail tabs (overview context, stored ML
 probability evidence, behavioral rule evidence, the deterministic decision,
-advisory AI output, read-only audit history, and safe system status. Empty or
-unavailable data produces a friendly state rather than an exception.
+advisory AI output, and read-only audit history). Empty or unavailable data
+produces a friendly state rather than an exception.
 
 `Time`, `Amount`, and `V1`–`V28` are real Kaggle dataset fields; V1–V28 are not
 displayed. `user_id`, `device_id`, `region`, `transaction_velocity`,
