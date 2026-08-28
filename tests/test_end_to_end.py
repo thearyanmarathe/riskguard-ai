@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT))
 from ai_investigator import ApplicationInvestigator  # noqa: E402
 from ai_provider import OpenAIProvider  # noqa: E402
 from app import rule_rows  # noqa: E402
+import test_support  # noqa: E402,F401
 from api.main import app  # noqa: E402
 from test_ai_provider import FakeResponse, VALID_RESPONSE  # noqa: E402
 

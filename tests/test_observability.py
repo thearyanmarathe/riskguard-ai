@@ -16,6 +16,7 @@ ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import test_support  # noqa: E402,F401
 import api.main as api_main  # noqa: E402
 from observability import duration_ms, log_event, new_request_id  # noqa: E402
 

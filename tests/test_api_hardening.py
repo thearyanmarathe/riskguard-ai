@@ -15,6 +15,7 @@ ROOT = Path(__file__).parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import test_support  # noqa: E402,F401
 import api.main as api_main  # noqa: E402
 from database import Database  # noqa: E402
 from investigation_repository import InvestigationRepository  # noqa: E402

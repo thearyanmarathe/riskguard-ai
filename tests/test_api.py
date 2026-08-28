@@ -8,8 +8,11 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-sys.path.insert(0, str(Path(__file__).parents[1]))
+ROOT = Path(__file__).parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tests"))
 
+import test_support  # noqa: E402,F401
 from api.main import app  # noqa: E402
 
 

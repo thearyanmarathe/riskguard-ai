@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests"))
 
+import test_support  # noqa: E402,F401
 import api.main as api_main  # noqa: E402
 from ai_guardrails import GuardrailError, build_ai_messages, guarded_investigation, validate_ai_output  # noqa: E402
 from ai_investigator import ApplicationInvestigator  # noqa: E402

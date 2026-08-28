@@ -22,6 +22,7 @@ from database import Database  # noqa: E402
 from investigator import DeterministicInvestigator  # noqa: E402
 from validate_risk_engine import implementation_cases  # noqa: E402
 
+import test_support  # noqa: E402,F401
 import api.main as api_main  # noqa: E402
 
 

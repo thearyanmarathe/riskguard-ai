@@ -13,6 +13,7 @@ from fastapi.testclient import TestClient
 sys.path.insert(0, str(Path(__file__).parents[1]))
 sys.path.insert(0, str(Path(__file__).parents[1] / "scripts"))
 
+import test_support  # noqa: E402,F401
 from api import auth  # noqa: E402
 from api.main import app  # noqa: E402
 
