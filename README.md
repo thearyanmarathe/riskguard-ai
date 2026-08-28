@@ -110,6 +110,16 @@ Run the three deterministic LOW, MEDIUM, and HIGH scenarios:
 
 The demo uses selected real dataset rows with synthetic behavioral context and deterministic fallback. See [docs/DEMO.md](docs/DEMO.md).
 
+## 5-Minute Demo
+
+Primary command:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_demo.py
+```
+
+The flow briefly shows LOW (`28727`), MEDIUM (`233005`), then centers on HIGH (`215984`) with score `95.00`, saved ML probability approximately `0.9999875`, and 35 behavioral points. See the [demo script](docs/DEMO_SCRIPT.md) and [demo checklist](docs/DEMO_CHECKLIST.md).
+
 See the detailed documentation:
 
 - [Architecture, demo story, readiness matrix, and Phase 1-23 history](docs/ARCHITECTURE.md)

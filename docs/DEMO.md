@@ -71,3 +71,7 @@ The runner consumes application-owned risk values and does not recalculate the r
 **LIMITATION:** This is not a production payment simulation, production performance test, real behavioral-history demonstration, live AI evaluation, browser test, or Docker runtime test. A high probability, score, or level is an investigation signal and does not prove fraud.
 
 Related documentation: [architecture](ARCHITECTURE.md), [model](MODEL.md), [risk engine](RISK_ENGINE.md), [AI agent boundary](AI_AGENT.md), and [system evaluation](../reports/evaluation/system_evaluation.md).
+
+For the spoken five-minute flow, see [DEMO_SCRIPT.md](DEMO_SCRIPT.md) and
+[DEMO_CHECKLIST.md](DEMO_CHECKLIST.md). Actual verification is recorded in
+[demo_readiness.md](../reports/demo/demo_readiness.md).

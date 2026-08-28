@@ -125,7 +125,9 @@ This concise history follows the repository’s commit history and checked-in ar
 | 22 | Investigation console upgrade |
 | 23 | Deployment configuration and system evaluation |
 
-The repository contains no Phase 25 work.
+Phase 25 demo preparation is present in `demo/scenarios.json` and
+`scripts/run_demo.py`. Phase 26 presentation material is documented in
+[DEMO_SCRIPT.md](DEMO_SCRIPT.md) and [DEMO_CHECKLIST.md](DEMO_CHECKLIST.md).
 
 ## Related evidence
 
